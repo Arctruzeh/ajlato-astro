@@ -85,14 +85,8 @@ body {
 }
 
 .bg {
-    animation-name: slide;
-    animation-duration: 4s;
-    animation-timing-function: ease-in-out;
-    animation-delay: 0s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-
-    background-image: linear-gradient(60deg, #70c7be 50%, #7f92cf 50%);
+    animation: slide 10s ease-in-out infinite alternate;
+    background-image: linear-gradient(-60deg, #70c7be 50%, #7f92cf 50%);
     bottom: 0;
     left: -50%;
     opacity: .5;
@@ -103,75 +97,20 @@ body {
 }
 
 .bg2 {
-    animation-name: slide;
-    animation-duration: 5s;
-    animation-timing-function: ease-in-out;
-    animation-delay: 0s;
-    animation-iteration-count: infinite;
     animation-direction: alternate-reverse;
-
-    background-image: linear-gradient(60deg, #70c7be 50%, #7f92cf 50%);
-    bottom: 0;
-    left: -50%;
-    opacity: .5;
-    position: fixed;
-    right: -50%;
-    top: 0;
-    z-index: -1;
+    animation-duration: 11s;
 }
 
 .bg3 {
-    animation-name: slide;
-    animation-duration: 6s;
-    animation-timing-function: ease-in-out;
-    animation-delay: 0s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-
-    background-image: linear-gradient(60deg, #70c7be 50%, #7f92cf 50%);
-    bottom: 0;
-    left: -50%;
-    opacity: .5;
-    position: fixed;
-    right: -50%;
-    top: 0;
-    z-index: -1;
-}
-
-.bg4 {
-    animation-name: slide;
-    animation-duration: 7s;
-    animation-timing-function: ease-in-out;
-    animation-delay: 0s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate-reverse;
-
-    background-image: linear-gradient(60deg, #70c7be 50%, #7f92cf 50%);
-    bottom: 0;
-    left: -50%;
-    opacity: .5;
-    position: fixed;
-    right: -50%;
-    top: 0;
-    z-index: -1;
+    animation-duration: 12s;
 }
 
 @keyframes slide {
     0% {
-        transform:rotateX('0deg');
+        transform: translateX(-25%);
     }
 
     100% {
-        transform:rotateX('30deg');
-    }
-}
-
-@keyframes slide2 {
-    0% {
-        transform: translateX(-50%);
-    }
-
-    100% {
-        transform: translateX(50%);
+        transform: translateX(25%);
     }
 }
