@@ -1,7 +1,5 @@
 ---
-import Nav from "../components/Nav.astro";
-import Footer from "../components/Footer.astro";
-import "../styles/global.css";
+// import "../styles/global.css";
 import { ClientRouter, fade, slide } from "astro:transitions";
 import { Image } from 'astro:assets'
 import icon from '../assets/images/code.png' // Add your icon path here
@@ -14,12 +12,15 @@ import icon from '../assets/images/code.png' // Add your icon path here
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href={icon.src} />
         <meta name="generator" content={Astro.generator} />
-        <title>A.J. Latocha</title>
+        <title>A.J. Latocha | Kayce</title>
         <ClientRouter />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Crafty+Girls&display=swap" rel="stylesheet">
     </head>
     <body>
-        <Nav />
+
         <slot />
-        <Footer />
+
     </body>
 </html>

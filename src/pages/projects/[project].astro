@@ -1,0 +1,19 @@
+---
+export function getStaticPaths() {
+  return [
+    {params: {project: 'clifford'}},
+    {params: {project: 'rover'}},
+    {params: {project: 'spot'}},
+  ];
+}
+
+const { project } = Astro.params;
+
+import { Image } from 'astro:assets';
+import myImage from '../../assets/images/fizzbuzz.jpg';
+---
+<div>Good project, {project}!</div>
+<Image 
+  src={myImage} 
+  alt="Description"
+/>
