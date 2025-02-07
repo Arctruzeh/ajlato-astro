@@ -4,5 +4,15 @@ import Hero from '../components/Hero.astro';
 ---
 
 <Layout>
-	<Hero />
+	<div class="home-container">
+		<Hero />
+	</div>
 </Layout>
+
+<style>
+	.home-container {
+		height: 100vh;
+		overflow: hidden;
+		position: relative;
+	}
+</style>

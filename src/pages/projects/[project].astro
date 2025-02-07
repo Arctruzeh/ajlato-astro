@@ -1,19 +1,54 @@
 ---
+import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import { projects } from '../../data/projects';
+
 export function getStaticPaths() {
-  return [
-    {params: {project: 'clifford'}},
-    {params: {project: 'rover'}},
-    {params: {project: 'spot'}},
-  ];
+    return Object.keys(projects).map(slug => ({
+        params: { project: slug }
+    }));
 }
 
 const { project } = Astro.params;
-
-import { Image } from 'astro:assets';
-import myImage from '../../assets/images/fizzbuzz.jpg';
+if (!(project in projects)) {
+    throw new Error(`Project ${project} not found`);
+}
+const projectData = projects[project as keyof typeof projects];
 ---
-<div>Good project, {project}!</div>
-<Image 
-  src={myImage} 
-  alt="Description"
-/>
+
+<Layout>
+    <div class="project-detail">
+        <h1>{projectData.name}</h1>
+        <p>{projectData.description}</p>
+        <Image 
+            src={projectData.image} 
+            alt={projectData.name}
+            width={800}
+            height={450}
+        />
+    </div>
+</Layout>
+
+<style>
+    .project-detail {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+</style>

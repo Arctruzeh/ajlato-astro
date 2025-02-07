@@ -5,21 +5,45 @@ import "../styles/global.css";
 import { ClientRouter, fade, slide } from "astro:transitions";
 import { Image } from 'astro:assets'
 import icon from '../assets/images/code.png' // Add your icon path here
+
+const isHomePage = Astro.url.pathname === "/";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:animate="slide">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href={icon.src} />
         <meta name="generator" content={Astro.generator} />
         <title>A.J. Latocha</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
         <ClientRouter />
     </head>
-    <body>
-        <Nav />
-        <slot />
-        <Footer />
+    <body class={isHomePage ? 'home-body' : ''}>
+        <Nav transition:persist />
+        <main transition:animate="slide">
+            <slot />
+        </main>
+        <Footer transition:persist />
     </body>
 </html>
+
+<style>
+    .home-body {
+        overflow: hidden;
+        height: 100vh;
+    }
+
+    main {
+        padding-top: 4rem; /* Account for fixed navbar */
+        min-height: calc(100vh - 4rem); /* Ensure main content takes up full viewport height minus navbar */
+    }
+
+    @media (max-width: 768px) {
+        main {
+            padding-top: 7rem; /* Account for taller mobile navbar */
+            min-height: calc(100vh - 7rem);
+        }
+    }
+</style>
