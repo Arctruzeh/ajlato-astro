@@ -1,8 +1,8 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { fishingData } from '../../data/fishing-spots.js';
+import { fishingData } from '../data/fishing-spots.js';
 
 // Type definitions
 type FishingSpotSection = {
@@ -215,10 +215,10 @@ const firstSpot = spotKeys[0];
             width: 200px;
             height: 100px;
             padding: 0;
-            background-color: rgba(32, 32, 36, 0.6);
-            border: 1px solid rgba(144, 144, 144, 0.25);
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all var(--transition-speed) ease;
             border-radius: 8px;
             overflow: hidden;
             display: flex;
@@ -233,7 +233,7 @@ const firstSpot = spotKeys[0];
             height: 100%;
             object-fit: cover;
             opacity: 0.4;
-            transition: opacity 0.3s ease;
+            transition: opacity var(--transition-speed) ease;
         }
 
         .spot-selector:hover .spot-selector-background {
@@ -250,7 +250,7 @@ const firstSpot = spotKeys[0];
             width: 100%;
             padding: 0.75rem;
             background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
-            color: #fff;
+            color: var(--text-primary);
             text-align: left;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -259,13 +259,13 @@ const firstSpot = spotKeys[0];
         }
 
         .spot-selector.active {
-            box-shadow: 0 0 0 3px #007bff;
+            box-shadow: 0 0 0 3px var(--accent-secondary);
         }
 
         .content-container {
             display: flex;
             gap: 1.5rem;
-            background-color: rgba(32, 32, 36, 0.6);
+            background-color: var(--overlay-primary);
             border-radius: 8px;
             padding: 1.5rem;
             backdrop-filter: blur(10px);
@@ -285,9 +285,9 @@ const firstSpot = spotKeys[0];
 
         .accordion-section {
             margin-bottom: 1rem;
-            border: 1px solid rgba(144, 144, 144, 0.25);
+            border: 1px solid var(--border-primary);
             border-radius: 4px;
-            background-color: rgba(64, 64, 72, 0.4);
+            background-color: var(--bg-secondary);
         }
 
         .accordion-section-header {
@@ -305,20 +305,20 @@ const firstSpot = spotKeys[0];
             background-color: transparent;
             border: none;
             text-align: left;
-            color: #fff;
-            transition: background-color 0.3s ease;
+            color: var(--text-primary);
+            transition: background-color var(--transition-speed) ease;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .accordion-title:hover {
-            background-color: rgba(144, 144, 144, 0.1);
+            background-color: var(--overlay-secondary);
         }
 
         .accordion-toggle {
             font-size: 0.8em;
             margin-left: 0.5rem;
-            color: #007bff;
+            color: var(--accent-secondary);
         }
 
         .accordion-description {
@@ -326,8 +326,11 @@ const firstSpot = spotKeys[0];
             overflow: hidden;
             opacity: 0;
             padding: 0 1rem;
-            color: rgba(255, 255, 255, 0.8);
-            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+            color: var(--text-secondary);
+            transition: 
+                max-height var(--transition-speed) ease, 
+                opacity var(--transition-speed) ease, 
+                padding var(--transition-speed) ease;
         }
 
         .accordion-description.expanded {
