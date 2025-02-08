@@ -1,0 +1,443 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { fishingData } from '../../data/fishing-spots.js';
+
+// Type definitions
+type FishingSpotSection = {
+    title: string;
+    description: string;
+};
+
+type FishingSpotData = {
+    [key in 'Anclote North' | 'Dutchmen Key North' | 'Dutchmen Key South' | 'Anclote South' | 'Anclote River']: {
+        image: ImageMetadata;
+        sections: FishingSpotSection[];
+    };
+};
+
+// Type assertion for fishingData
+const typedFishingData = fishingData as FishingSpotData;
+
+const spotKeys = Object.keys(typedFishingData) as Array<keyof FishingSpotData>;
+const firstSpot = spotKeys[0];
+---
+
+<Layout title="Anclote Fishing Spots">
+    <div class="anclote-container">
+        <div class="selection-bar">
+            {spotKeys.map((spot, index) => (
+                <button 
+                    class={`spot-selector ${index === 0 ? 'active' : ''}`} 
+                    data-spot={spot}
+                >
+                    <img 
+                        src={typedFishingData[spot].image.src} 
+                        alt={`${spot} background`} 
+                        class="spot-selector-background"
+                    />
+                    <span class="spot-selector-text">{spot}</span>
+                </button>
+            ))}
+        </div>
+
+        <div class="content-container">
+            <!-- Accordion on Left -->
+            <div class="accordion-container">
+                {spotKeys.map((spot, spotIndex) => (
+                    <div 
+                        class={`accordion-item ${spotIndex === 0 ? 'active' : ''}`} 
+                        data-spot={spot}
+                    >
+                        {typedFishingData[spot].sections.map((section, sectionIndex) => {
+                            const uniqueId = `${spot.replace(/\s+/g, '-').toLowerCase()}-section-${sectionIndex}`;
+                            const isExpanded = spotIndex === 0 && sectionIndex === 0;
+                            return (
+                                <div class="accordion-section">
+                                    <h3 class="accordion-section-header">
+                                        <button 
+                                            type="button"
+                                            class="accordion-title"
+                                            aria-expanded={isExpanded}
+                                            aria-controls={`${uniqueId}-content`}
+                                            id={`${uniqueId}-header`}
+                                        >
+                                            {section.title}
+                                            <span class="accordion-toggle" aria-hidden="true">
+                                                {isExpanded ? '▼' : '►'}
+                                            </span>
+                                        </button>
+                                    </h3>
+                                    <div 
+                                        id={`${uniqueId}-content`}
+                                        class={`accordion-description ${isExpanded ? 'expanded' : ''}`}
+                                        role="region"
+                                        aria-labelledby={`${uniqueId}-header`}
+                                    >
+                                        {section.description}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                ))}
+            </div>
+
+            <!-- Image on Right -->
+            <div class="image-container">
+                {spotKeys.map((spot, index) => (
+                    <Image 
+                        src={typedFishingData[spot].image} 
+                        alt={`Anclote Fishing Spot ${spot}`} 
+                        class={`spot-image ${index === 0 ? 'active' : ''}`}
+                        data-spot={spot}
+                    />
+                ))}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const spotSelectors = document.querySelectorAll<HTMLButtonElement>('.spot-selector');
+            const accordionItems = document.querySelectorAll<HTMLDivElement>('.accordion-item');
+            const spotImages = document.querySelectorAll<HTMLImageElement>('.spot-image');
+            const accordionTitles = document.querySelectorAll<HTMLButtonElement>('.accordion-title');
+            const accordionDescriptions = document.querySelectorAll<HTMLDivElement>('.accordion-description');
+
+            // Spot Selection Logic
+            spotSelectors.forEach(selector => {
+                selector.addEventListener('click', () => {
+                    const spot = selector.getAttribute('data-spot');
+
+                    // Update active states for spot selection
+                    spotSelectors.forEach(s => s.classList.remove('active'));
+                    selector.classList.add('active');
+
+                    // Handle accordion items
+                    accordionItems.forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('data-spot') === spot) {
+                            item.classList.add('active');
+                            
+                            // Get all titles and descriptions in this accordion item
+                            const itemTitles = item.querySelectorAll('.accordion-title');
+                            const itemDescriptions = item.querySelectorAll('.accordion-description');
+                            
+                            // Reset all sections in this accordion item
+                            itemTitles.forEach((title, index) => {
+                                const description = itemDescriptions[index];
+                                const toggle = title.querySelector('.accordion-toggle');
+                                
+                                // Close all sections
+                                title.setAttribute('aria-expanded', 'false');
+                                description.classList.remove('expanded');
+                                if (toggle) toggle.textContent = '►';
+                                
+                                // Expand first section
+                                if (index === 0) {
+                                    title.setAttribute('aria-expanded', 'true');
+                                    description.classList.add('expanded');
+                                    if (toggle) toggle.textContent = '▼';
+                                }
+                            });
+                        }
+                    });
+
+                    // Handle images
+                    spotImages.forEach(image => {
+                        image.classList.remove('active');
+                        if (image.getAttribute('data-spot') === spot) {
+                            image.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            // Accordion Expansion Logic
+            accordionTitles.forEach(title => {
+                title.addEventListener('click', () => {
+                    const description = title.closest('.accordion-section')?.querySelector('.accordion-description');
+                    const toggle = title.querySelector('.accordion-toggle');
+                    const isCurrentlyExpanded = title.getAttribute('aria-expanded') === 'true';
+
+                    if (!description) return;
+
+                    // Close all other sections in the same accordion item
+                    const parentAccordionItem = title.closest('.accordion-item');
+                    if (parentAccordionItem) {
+                        const siblingTitles = parentAccordionItem.querySelectorAll('.accordion-title');
+                        siblingTitles.forEach(siblingTitle => {
+                            if (siblingTitle !== title) {
+                                const siblingDescription = siblingTitle.closest('.accordion-section')?.querySelector('.accordion-description');
+                                const siblingToggle = siblingTitle.querySelector('.accordion-toggle');
+                                
+                                siblingTitle.setAttribute('aria-expanded', 'false');
+                                siblingDescription?.classList.remove('expanded');
+                                if (siblingToggle) siblingToggle.textContent = '►';
+                            }
+                        });
+                    }
+
+                    // Toggle current section
+                    title.setAttribute('aria-expanded', isCurrentlyExpanded ? 'false' : 'true');
+                    description.classList.toggle('expanded');
+                    
+                    if (toggle) {
+                        toggle.textContent = description.classList.contains('expanded') ? '▼' : '►';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .anclote-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .selection-bar {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .spot-selector {
+            position: relative;
+            width: 200px;
+            height: 100px;
+            padding: 0;
+            background-color: rgba(32, 32, 36, 0.6);
+            border: 1px solid rgba(144, 144, 144, 0.25);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .spot-selector-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+            transition: opacity 0.3s ease;
+        }
+
+        .spot-selector:hover .spot-selector-background {
+            opacity: 0.6;
+        }
+
+        .spot-selector.active .spot-selector-background {
+            opacity: 0.7;
+        }
+
+        .spot-selector-text {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+            color: #fff;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .spot-selector.active {
+            box-shadow: 0 0 0 3px #007bff;
+        }
+
+        .content-container {
+            display: flex;
+            gap: 1.5rem;
+            background-color: rgba(32, 32, 36, 0.6);
+            border-radius: 8px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .accordion-container {
+            flex: 1;
+        }
+
+        .accordion-item {
+            display: none;
+        }
+
+        .accordion-item.active {
+            display: block;
+        }
+
+        .accordion-section {
+            margin-bottom: 1rem;
+            border: 1px solid rgba(144, 144, 144, 0.25);
+            border-radius: 4px;
+            background-color: rgba(64, 64, 72, 0.4);
+        }
+
+        .accordion-section-header {
+            margin: 0;
+        }
+
+        .accordion-title {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 400;
+            padding: 1rem;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            text-align: left;
+            color: #fff;
+            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .accordion-title:hover {
+            background-color: rgba(144, 144, 144, 0.1);
+        }
+
+        .accordion-toggle {
+            font-size: 0.8em;
+            margin-left: 0.5rem;
+            color: #007bff;
+        }
+
+        .accordion-description {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            padding: 0 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+        }
+
+        .accordion-description.expanded {
+            max-height: 1000px;
+            opacity: 1;
+            padding: 1rem;
+        }
+
+        .image-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .spot-image {
+            display: none;
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .spot-image.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .selection-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .spot-selector {
+                width: 100%;
+                height: 80px;
+            }
+
+            .spot-selector-text {
+                font-size: 0.8em;
+            }
+
+            .content-container {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .accordion-title {
+                padding: 0.75rem;
+                font-size: 0.9em;
+            }
+
+            .accordion-description {
+                padding: 0.75rem;
+                font-size: 0.9em;
+            }
+
+            .image-container {
+                align-items: center;
+            }
+
+            .spot-image {
+                max-height: 300px;
+                width: 100%;
+                object-fit: cover;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .spot-selector {
+                height: 70px;
+            }
+
+            .spot-selector-text {
+                font-size: 0.75em;
+                padding: 0.5rem;
+            }
+
+            .selection-bar {
+                margin-bottom: 0.5rem;
+            }
+
+            .spot-selector {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8em;
+            }
+
+            .content-container {
+                padding: 0.75rem;
+            }
+
+            .accordion-title {
+                padding: 0.5rem;
+                font-size: 0.85em;
+            }
+
+            .accordion-description {
+                padding: 0.5rem;
+                font-size: 0.85em;
+            }
+
+            .spot-image {
+                max-height: 250px;
+            }
+        }
+    </style>
+</Layout>

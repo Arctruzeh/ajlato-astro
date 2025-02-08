@@ -37,6 +37,15 @@ body {
     padding: 10px 20px;
 }
 
+.nav-logo {
+    color: #fff;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.5em;
+    text-decoration: none;
+    font-weight: 400;
+    text-shadow: 1px 1px grey;
+}
+
 .hero {
     position: absolute;
     z-index: 0;
