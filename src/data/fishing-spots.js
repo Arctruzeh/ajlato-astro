@@ -67,12 +67,20 @@ const fishingData = {
         image: ANCLOTE3,
         sections: [
             {
-                title: 'Deep Edge',
-                description: "The deep edge here provides a stark contrast in depth and serves as a highway for predator fish moving between feeding zones. During tide changes, game fish will stage along this edge to ambush prey being swept by with the current."
+                title: 'Trough',
+                description: "A Trough is uniquely different than a gut because it's not a pathway from the outside edge of the flat to the shallow zone. Instead, it acts as a giant elongated pothole that both bait fish and gamefish fall into on lower tide phases or even on high barometric pressure where they're looking to equalize. You can imagine this would be an area of structure that should get your attention and pay dividends on the right days."
             },
             {
-                title: 'Grass Line',
-                description: "A defined line where sandy bottom transitions to sea grass. This edge creates a natural ambush point where predator fish can hide in the grass and attack bait fish moving across the open sand. Particularly effective during moving tides."
+                title: 'Larger Potholes',
+                description: "Moving down the map below the trough, I made a notation about larger potholes which happen to be at the end of a gut or funnel feature that leads to the outside edge of the flat. This is an awesome piece of structure because it's the last deeper depth before moving up on a shallow flat. If you ask me, that's some prime real estate for gamefish, and I know that because I've been there."
+            },
+            {
+                title: 'Grass Flat w/ Potholes',
+                description: "Let's talk about this big highlighted area labeled grass flats with potholes. Flats are probably what anglers target the most when looking for redfish and trout, and that's because seagrass is the most plentiful cover in the region and holds tons of forage. Think of it as a grocery store. The issue you have with a really big zone like this is that gamefish could be anywhere in it, so you have to target the structure within the grass flat that is going to be primarily potholes of varying depths and sizes that gamefish utilize to ambush prey. But other structure within that flat could be ambush points as well, such as isolated micro shell bars, old prop scars, and I'm going to say even little limestone rocky shelves that are out there. Generally speaking, you have to cover water in these types of structure zones to be uber successful."
+            },
+            {
+                title: 'Hard Bar on Main Point',
+                description: "Finally, on this overlay we will look at that main rounded point on the edge of the flat. It has a hard white sandbar that defines it, telling you current is relevant here. These big main rounded points may not be very deep, usually under 6 ft, but most of the time this type of structure is home to big speckled trout and even kobia are attracted to this type of structure. It's edge structure and it outlines the flat now."
             }
         ]
     },
@@ -81,19 +89,19 @@ const fishingData = {
         sections: [
             {
                 title: 'Lagoons',
-                description: "Protected areas that offer calm water and concentrate bait fish. These spots are particularly effective during windy conditions or strong tides, providing shelter for both predator and prey species."
+                description: "It's a shallow body of water and it's surrounded on all sides, and the opening or the drain is cut off usually by bars or land. That's what defines a lagoon in general. These types of structure zones usually harbor crabs and vertebrates, fry, minnows - no real big fish unless there's some unusual high tide. But gamefish see the value in them, especially when the lagoon drains on particularly high tides or wind directions."
             },
             {
                 title: "Drains",
-                description: "Natural channels that drain water from the flat during falling tides. These create excellent ambush points as bait is forced to move through these areas with the falling water."
+                description: "Drains are a structure that allow backwater ponds or lagoons to pull forage through for predators like redfish, snook, flounder, ladyfish, etc. You can see how this drain feature runs from the south end of the lagoon all the way to the east, nearly to the drop-off, which is another bridge to my next point of structure."
             },
             {
                 title: "Dropoff",
-                description: "A sharp change in depth that creates a defined edge. Predator fish use these edges as ambush points, especially during tide changes when bait is forced to move along these edges."
+                description: "Drop-offs are a deeper form of structure, generally they're over 10 ft deep and often times 20 ft deep. They're home to larger predators because the current is strong there - that's what carved out that depth, especially when they're in close proximity to such shallow flats like in this map section here. I call them the drive-through windows for big snook, redfish, flounder, and even tarpon in the summertime."
             },
             {
                 title: "Beaches",
-                description: "Sandy areas that slope gradually into deeper water. These areas are particularly good during the warmer months when bait fish school along the beach edges. The clean bottom makes sight fishing particularly effective here."
+                description: "The beach structure is the most defined edge for this large key island, and lots of gamefish use it to hunt for prey. My favorite feature of the beach has got to be the swash channels that run right along the sandy edge of the beach. Both prey and predators patrol these swash channels, which makes this an excellent zone for anglers to target. You'll catch whiting, flounder, snook, jacks - literally everything in this type of structure feature. And on the outside bars and breaks at the beach, there will be plenty of opportunities to jump a tarpon, run into a school of mackerel, or catch a huge shark."
             }
         ]
     },
@@ -102,11 +110,11 @@ const fishingData = {
         sections: [
             {
                 title: 'Shoals',
-                description: "Shallow areas that create distinct edges where they meet deeper water. These areas concentrate bait and create natural ambush points for predator fish, especially during moving tides."
+                description: "All right, let's look at the bonus satellite overlay of the Anclote River mouth. The shoals are the first structure element in the overlay. The difference between shoals and sandbar is that shoals are generally much longer in length. This is one outlining the main channel going in and out of the Anclote River as a structure feature. Shoals are attractive to schooling gamefish that can trap bait against the shoal, especially on strong flows. It's a great play for speckled trout, jacks, and even strings of tarpon certain times of the year."
             },
             {
                 title: 'Channel Edge',
-                description: "The defined edge where the main channel meets the shallow flat. This edge serves as a travel corridor for fish and creates excellent feeding opportunities during tide changes."
+                description: "Let's drop down to those spoil islands on the south side of the river channel. They offer anglers great structure very close to deep water, which is key for catching larger speckled trout, snook, and because current and structure collide here, obviously big flounder."
             }
         ]
     }
