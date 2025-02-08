@@ -8,6 +8,9 @@ import { fishingData } from '../data/fishing-spots.js';
 type FishingSpotSection = {
     title: string;
     description: string;
+    tide: string;
+    fish: string[];
+    season: string;
 };
 
 type FishingSpotData = {
@@ -75,7 +78,18 @@ const firstSpot = spotKeys[0];
                                         role="region"
                                         aria-labelledby={`${uniqueId}-header`}
                                     >
-                                        {section.description}
+                                        <p>{section.description}</p>
+                                        <div class="section-metadata">
+                                            <div class="metadata-item">
+                                                <strong>Tide:</strong> {section.tide}
+                                            </div>
+                                            <div class="metadata-item">
+                                                <strong>Fish Species:</strong> {section.fish.join(', ')}
+                                            </div>
+                                            <div class="metadata-item">
+                                                <strong>Best Season:</strong> {section.season}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             );
@@ -337,6 +351,20 @@ const firstSpot = spotKeys[0];
             max-height: 1000px;
             opacity: 1;
             padding: 1rem;
+        }
+
+        .section-metadata {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            background-color: var(--dark-bg-tertiary);
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .metadata-item {
+            flex: 1;
+            text-align: center;
         }
 
         .image-container {
