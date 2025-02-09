@@ -176,7 +176,7 @@ const fishingData = {
                 season: 'Spring to Fall'
             },
             {
-                title: 'Channel Edge',
+                title: 'Spoil Islands',
                 description: "Let's drop down to those spoil islands on the south side of the river channel. They offer anglers great structure very close to deep water, which is key for catching larger speckled trout, snook, and because current and structure collide here, obviously big flounder.",
                 tide: 'Moving Current',
                 fish: ['Speckled Trout', 'Snook', 'Flounder'],
