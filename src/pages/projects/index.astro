@@ -17,10 +17,6 @@ const projectsList = Object.entries(projects).map(([slug, data]) => ({
         {
             projectsList.map((project, index) => (
                 <div class="project">
-                    <div class="project-content">
-                        <h2>{project.name}</h2>
-                        <p>{project.description}</p>
-                    </div>
                     <div class="project-media">
                         <Image 
                             src={project.image} 
@@ -29,6 +25,10 @@ const projectsList = Object.entries(projects).map(([slug, data]) => ({
                             height={338}
                             loading={index === 0 ? "eager" : "lazy"}
                         />
+                    </div>
+                    <div class="project-content">
+                        <h2>{project.name}</h2>
+                        <p>{project.description}</p>
                         <div class="project-links">
                             <a href={`/projects/${project.slug}`} class="view-project">View Project</a>
                             <a href={project.github} class="github-link" target="_blank" rel="noopener noreferrer">
@@ -75,6 +75,18 @@ const projectsList = Object.entries(projects).map(([slug, data]) => ({
         transform: scale(1.02);
     }
 
+    .project-media {
+        width: 100%;
+        position: relative;
+    }
+
+    .project-media img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+    }
+
     .project-content {
         padding: 1.5rem;
         background-color: var(--overlay-secondary);
@@ -91,59 +103,63 @@ const projectsList = Object.entries(projects).map(([slug, data]) => ({
 
     .project-content p {
         color: var(--text-secondary);
-        margin-bottom: 0;
+        margin-bottom: 1rem;
         line-height: 1.6;
-        min-height: 6rem;  /* Ensures consistent height */
+        min-height: 6rem;
         display: -webkit-box;
-        -webkit-line-clamp: 4;  /* Limits to 4 lines */
+        -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
-    .project-media {
-        position: relative;
-    }
-
-    .project-media img {
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-        transition: opacity var(--transition-speed) ease;
-    }
-
     .project-links {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        margin-top: auto;
         display: flex;
-        justify-content: space-between;
-        padding: 1rem;
-        background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 0.5rem 0;
     }
 
-    .project-links a {
-        color: var(--text-primary);
+    .view-project,
+    .github-link {
+        padding: 0.75rem 1.25rem;
+        border-radius: 6px;
         text-decoration: none;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        transition: 
-            background-color var(--transition-speed) ease,
-            color var(--transition-speed) ease;
+        font-weight: 500;
+        flex: 1;
+        text-align: center;
+        min-width: 140px;
+        transition: all 0.2s ease-in-out;
+        border: 2px solid transparent;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
     }
 
     .view-project {
         background-color: var(--accent-primary);
+        color: var(--text-primary);
     }
 
     .github-link {
         background-color: var(--accent-secondary);
+        color: var(--text-primary);
     }
 
-    .project-links a:hover {
-        background-color: var(--overlay-secondary);
-        color: var(--text-primary);
+    .view-project:hover,
+    .github-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .view-project:active,
+    .github-link:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     @media (max-width: 768px) {
@@ -167,7 +183,14 @@ const projectsList = Object.entries(projects).map(([slug, data]) => ({
         }
 
         .project-links {
-            padding: 0.75rem;
+            padding: 0.25rem 0;
+        }
+
+        .view-project,
+        .github-link {
+            padding: 0.625rem 1rem;
+            min-width: 120px;
+            font-size: 0.9rem;
         }
     }
 </style>
