@@ -27,27 +27,6 @@ const isHomePage = Astro.url.pathname === "/";
             <slot />
         </main>
         <Footer />
-
-        <script>
-            function updateMainPadding() {
-                const nav = document.querySelector('.nav') as HTMLElement;
-                const main = document.querySelector('main') as HTMLElement;
-                if (nav && main) {
-                    const navHeight = nav.offsetHeight;
-                    main.style.paddingTop = `${navHeight}px`;
-                    main.style.minHeight = `calc(100vh - ${navHeight}px)`;
-                }
-            }
-
-            // Update on initial load
-            updateMainPadding();
-
-            // Update when window is resized
-            window.addEventListener('resize', updateMainPadding);
-
-            // Update when DOM content is loaded (for safety)
-            document.addEventListener('DOMContentLoaded', updateMainPadding);
-        </script>
     </body>
 </html>
 
@@ -58,9 +37,8 @@ const isHomePage = Astro.url.pathname === "/";
     }
 
     main {
-        /* Initial values before JS runs */
-        padding-top: 0;
-        min-height: 100vh;
+        padding-top: 72px;
+        min-height: calc(100vh - 72px);
         transition: padding-top 0.2s ease;
     }
 </style>

@@ -14,26 +14,6 @@
     </div>
 </div>
 
-<script>
-    function updateInnerPosition() {
-        const nav = document.querySelector('.nav') as HTMLElement;
-        const inner = document.querySelector('.inner') as HTMLElement;
-        if (nav && inner) {
-            const navHeight = nav.offsetHeight;
-            inner.style.transform = `translateY(-${navHeight}px)`;
-        }
-    }
-
-    // Update on initial load
-    updateInnerPosition();
-
-    // Update when window is resized
-    window.addEventListener('resize', updateInnerPosition);
-
-    // Update when DOM content is loaded (for safety)
-    document.addEventListener('DOMContentLoaded', updateInnerPosition);
-</script>
-
 <style>
     .hero {
         position: absolute;
@@ -53,6 +33,7 @@
         padding: 2em;
         position: relative;
         z-index: 2;
+        transform: translateY(-72px);
         transition: transform 0.2s ease;
     }
 
