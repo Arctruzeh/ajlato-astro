@@ -35,10 +35,14 @@ const firstSpot = spotKeys[0];
                     class={`spot-selector ${index === 0 ? 'active' : ''}`} 
                     data-spot={spot}
                 >
-                    <img 
-                        src={typedFishingData[spot].image.src} 
+                    <Image 
+                        src={typedFishingData[spot].image}
                         alt={`${spot} background`} 
                         class="spot-selector-background"
+                        width={200}
+                        height={100}
+                        quality={80}
+                        loading="eager"
                     />
                     <span class="spot-selector-text">{spot}</span>
                 </button>
@@ -146,6 +150,7 @@ const firstSpot = spotKeys[0];
                         alt={`Anclote Fishing Spot ${spot}`} 
                         class={`spot-image ${index === 0 ? 'active' : ''}`}
                         data-spot={spot}
+                        loading="eager"
                     />
                 ))}
             </div>
