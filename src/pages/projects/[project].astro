@@ -18,14 +18,89 @@ const projectData = projects[project as keyof typeof projects];
 
 <Layout>
     <div class="project-detail">
+        <a href="/projects" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Projects
+        </a>
         <h1>{projectData.name}</h1>
-        <p>{projectData.description}</p>
+        <p class="intro-description">{projectData.description}</p>
+        
         <Image 
             src={projectData.image} 
             alt={projectData.name}
             width={800}
             height={450}
+            class="main-image"
         />
+        
+        <div class="project-metadata">
+            <div class="metadata-item">
+                <h3>Created</h3>
+                <p>{projectData.dateCreated}</p>
+            </div>
+            
+            <div class="metadata-item">
+                <h3>Technologies</h3>
+                <ul class="tags">
+                    {projectData.technologies.map(tech => (
+                        <li class="tag">{tech}</li>
+                    ))}
+                </ul>
+            </div>
+            
+            <div class="metadata-item links">
+                <a href={projectData.github} target="_blank" rel="noopener noreferrer" class="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                    GitHub Repository
+                </a>
+                
+                {projectData.liveDemo && (
+                    <a href={projectData.liveDemo} target="_blank" rel="noopener noreferrer" class="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        Live Demo
+                    </a>
+                )}
+            </div>
+        </div>
+        
+        <div class="project-content">
+            <section>
+                <h2>About this Project</h2>
+                <p>{projectData.detailedDescription}</p>
+            </section>
+            
+            <section>
+                <h2>Features</h2>
+                <ul class="features-list">
+                    {projectData.features.map(feature => (
+                        <li>{feature}</li>
+                    ))}
+                </ul>
+            </section>
+            
+            <section>
+                <h2>Challenges & Solutions</h2>
+                <div class="challenges-solutions">
+                    <div class="challenge">
+                        <h3>The Challenge</h3>
+                        <p>{projectData.challenges}</p>
+                    </div>
+                    <div class="solution">
+                        <h3>The Solution</h3>
+                        <p>{projectData.solutions}</p>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 </Layout>
 
@@ -37,24 +112,51 @@ const projectData = projects[project as keyof typeof projects];
         background-color: var(--bg-secondary);
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+    
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+        transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    }
+    
+    .back-button:hover {
+        color: var(--accent-tertiary);
+        transform: translateX(-3px);
+    }
+    
+    .back-button svg {
+        width: 1.2rem;
+        height: 1.2rem;
+        transition: transform var(--transition-speed) ease;
+    }
+    
+    .back-button:hover svg {
+        transform: translateX(-2px);
     }
 
     h1 {
         font-size: 2.5rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
         color: var(--accent-quaternary);
         padding: 1.5rem 1.5rem 0;
     }
 
-    p {
+    .intro-description {
         font-size: 1.2rem;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
         color: var(--text-secondary);
         padding: 0 1.5rem;
-        line-height: 1.6;
+        font-style: italic;
     }
 
-    img {
+    .main-image {
         width: 100%;
         height: auto;
         object-fit: cover;
@@ -63,8 +165,123 @@ const projectData = projects[project as keyof typeof projects];
         transition: transform var(--transition-speed) ease;
     }
 
-    img:hover {
+    .main-image:hover {
         transform: scale(1.02);
+    }
+
+    .project-metadata {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 0 1.5rem 2rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1.5rem;
+    }
+
+    .metadata-item h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--accent-tertiary);
+    }
+
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        list-style: none;
+        padding: 0;
+    }
+
+    .tag {
+        background-color: var(--accent-primary);
+        color: var(--bg-primary);
+        padding: 0.3rem 0.7rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+
+    .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: var(--accent-secondary);
+        color: var(--bg-primary);
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color var(--transition-speed) ease;
+    }
+
+    .button:hover {
+        background-color: var(--accent-tertiary);
+    }
+
+    .icon {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .project-content {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    .project-content h2 {
+        font-size: 1.8rem;
+        margin: 1.5rem 0 1rem;
+        color: var(--accent-tertiary);
+    }
+
+    .project-content p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+    }
+
+    .features-list {
+        padding-left: 1.5rem;
+    }
+
+    .features-list li {
+        margin-bottom: 0.7rem;
+        font-size: 1.1rem;
+        color: var(--text-primary);
+    }
+
+    .challenges-solutions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .challenge, .solution {
+        background-color: var(--bg-primary);
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+
+    .challenge h3, .solution h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.7rem;
+        color: var(--accent-quaternary);
+    }
+
+    .challenge p, .solution p {
+        margin-bottom: 0;
+    }
+
+    @media (min-width: 768px) {
+        .challenges-solutions {
+            grid-template-columns: 1fr 1fr;
+        }
     }
 
     @media (max-width: 768px) {
@@ -78,9 +295,17 @@ const projectData = projects[project as keyof typeof projects];
             padding: 1rem 1rem 0;
         }
 
-        p {
+        .intro-description {
             font-size: 1rem;
             padding: 0 1rem;
+        }
+
+        .project-metadata {
+            margin: 0 1rem 1.5rem;
+        }
+
+        .project-content {
+            padding: 0 1rem 1rem;
         }
     }
 </style>

@@ -1,0 +1,230 @@
+---
+import GlassCard from '../components/GlassCard.astro';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content="Glassmorphism demo page showcasing various card designs" />
+		<title>Glassmorphism Demo</title>
+	</head>
+	<body>
+		<main id="main" role="main">
+            <div class="hero" role="region" aria-labelledby="main-heading">
+                <h1 id="main-heading">Glassmorphism Demo</h1>
+                <div class="cards-grid" role="list">
+                    <article class="card-wrapper" role="listitem">
+                        <GlassCard class="feature-card">
+                            <h2>Feature Card</h2>
+                            <p>This card showcases the basic glassmorphism effect with some content.</p>
+                            <button aria-label="Learn more about features">Learn More</button>
+                        </GlassCard>
+                    </article>
+
+                    <article class="card-wrapper" role="listitem">
+                        <GlassCard class="stats-card">
+                            <span class="number" aria-label="42 thousand plus">42k+</span>
+                            <p>Active Users</p>
+                        </GlassCard>
+                    </article>
+
+                    <article class="card-wrapper" role="listitem">
+                        <GlassCard class="profile-card">
+                            <div class="avatar" role="img" aria-label="Profile avatar placeholder"></div>
+                            <h3>John Doe</h3>
+                            <p>Full Stack Developer</p>
+                        </GlassCard>
+                    </article>
+                </div>
+            </div>
+		</main>
+	</body>
+</html>
+
+<style>
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        line-height: 1.6;
+        color: #333;
+    }
+
+    /* Hero section with gradient background */
+    .hero {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Animated background elements */
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        animation: rotate 20s linear infinite;
+        z-index: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .hero::before {
+            animation: none;
+        }
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    /* Content styling */
+    h1 {
+        color: white;
+        font-size: clamp(2rem, 5vw, 3rem);
+        text-align: center;
+        margin: 2rem 0;
+        position: relative;
+        z-index: 1;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Card specific styles */
+    .feature-card {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .feature-card h2 {
+        color: inherit;
+        font-size: 1.5rem;
+    }
+
+    .feature-card p {
+        color: inherit;
+    }
+
+    .feature-card button {
+        background: #4a5568;
+        color: white;
+        border: 1px solid transparent;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: auto;
+        font-size: 1rem;
+    }
+
+    .feature-card button:hover,
+    .feature-card button:focus {
+        background: #2d3748;
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+    }
+
+    .feature-card button:focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    .stats-card {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .stats-card .number {
+        font-size: 3rem;
+        font-weight: bold;
+        color: inherit;
+        line-height: 1;
+    }
+
+    .stats-card p {
+        color: inherit;
+        font-size: 1.1rem;
+    }
+
+    .profile-card {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .profile-card .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.1;
+        margin: 0 auto 1rem;
+        border: 2px solid currentColor;
+    }
+
+    .profile-card h3 {
+        color: inherit;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-card p {
+        color: inherit;
+    }
+
+    /* Focus styles */
+    :focus {
+        outline: 2px solid white;
+        outline-offset: 2px;
+    }
+
+    :focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .hero {
+            padding: 1rem;
+        }
+
+        .cards-grid {
+            gap: 1rem;
+        }
+    }
+
+    /* High contrast mode support */
+    @media (forced-colors: active) {
+        .glass-card {
+            border: 2px solid ButtonText;
+        }
+        
+        .feature-card button {
+            border: 2px solid ButtonText;
+        }
+    }
+</style>

@@ -1,0 +1,49 @@
+---
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={["glass-card", className]}>
+    <slot />
+</div>
+
+<style>
+    .glass-card {
+        /* Darker background with less transparency for better contrast */
+        background: rgba(255, 255, 255, 0.95);
+        color: #1a1a1a; /* Dark text for light mode */
+        backdrop-filter: blur(10px) saturate(180%);
+        -webkit-backdrop-filter: blur(10px) saturate(180%);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        .glass-card {
+            background: rgba(17, 25, 40, 0.95);
+            color: #ffffff; /* Light text for dark mode */
+            border: 1px solid rgba(255, 255, 255, 0.125);
+        }
+    }
+
+    /* High contrast mode support */
+    @media (forced-colors: active) {
+        .glass-card {
+            border: 2px solid ButtonText;
+            background: Canvas;
+            color: CanvasText;
+        }
+    }
+</style>
