@@ -38,18 +38,25 @@ const navLinks: NavLink[] = [
 
     <ul id="nav-menu" class="nav-links" aria-label="Navigation Menu">
       {
-        navLinks.map((link) => (
-          <li>
-            <a
-              href={link.href}
-              class="nav-link"
-              target={link.external ? "_blank" : undefined}
-              rel={link.external ? "noopener noreferrer" : undefined}
-            >
-              {link.label}
-            </a>
-          </li>
-        ))
+        navLinks.map((link) => {
+          const { pathname } = Astro.url;
+          const isActive =
+            pathname === link.href ||
+            (link.href !== "/" && pathname.startsWith(link.href));
+
+          return (
+            <li>
+              <a
+                href={link.href}
+                class={`nav-link ${isActive ? "active" : ""}`}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          );
+        })
       }
     </ul>
   </div>
@@ -117,10 +124,30 @@ const navLinks: NavLink[] = [
     font-weight: 400;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.3);
     transition: color var(--transition-speed) ease;
+    position: relative;
+    display: inline-block;
+  }
+
+  .nav-logo::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--accent-primary);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--transition-speed) var(--transition-cubic);
   }
 
   .nav-logo:hover {
-    color: var(--accent-secondary);
+    color: var(--text-primary);
+  }
+
+  .nav-logo:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
   }
 
   .hamburger {
@@ -183,6 +210,17 @@ const navLinks: NavLink[] = [
   .nav-link:hover::after {
     transform: scaleX(1);
     transform-origin: left;
+  }
+
+  .nav-link.active {
+    color: var(--accent-primary);
+    font-weight: 500;
+  }
+
+  .nav-link.active::after {
+    transform: scaleX(1);
+    height: 3px; /* Slightly thicker than the 2px hover underline */
+    background-color: var(--accent-primary);
   }
 
   @media (max-width: 768px) {
