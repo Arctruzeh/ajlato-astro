@@ -3,20 +3,21 @@ import projectImage2 from '../assets/images/gori.jpg';
 import projectImage3 from '../assets/images/fizzbuzz.jpg';
 import projectImage4 from '../assets/images/pic01.jpg';
 import projectImage5 from '../assets/images/pic02.jpg';
+import projectImage6 from '../assets/images/moolameter.png';
 import type { ImageMetadata } from 'astro';
 
 export interface Project {
-  name: string;
-  description: string;
-  detailedDescription: string;
-  image: ImageMetadata;
-  github: string;
-  liveDemo?: string | null;
-  technologies: string[];
-  features: string[];
-  dateCreated: string;
-  challenges: string;
-  solutions: string;
+    name: string;
+    description: string;
+    detailedDescription: string;
+    image: ImageMetadata;
+    github: string;
+    liveDemo?: string | null;
+    technologies: string[];
+    features: string[];
+    dateCreated: string;
+    challenges: string;
+    solutions: string;
 }
 
 export const projects = {
@@ -115,5 +116,24 @@ export const projects = {
         dateCreated: "December 2023",
         challenges: "Building a secure login system requires addressing numerous security considerations simultaneously. Balancing security with usability, handling session management correctly, and implementing proper password policies all presented significant challenges.",
         solutions: "I implemented the system using PHP's password_hash and password_verify functions with appropriate cost factors. A dedicated SecurityService class handles CSRF protection, input sanitization, and other security concerns. The database interactions use prepared statements exclusively to prevent SQL injection, and all user-facing output is properly escaped."
+    },
+    'moolameter': {
+        name: "MoolaMeter",
+        description: "Personal finance projection and budget forecasting tool.",
+        detailedDescription: "MoolaMeter is a comprehensive financial planning application that allows users to project their wealth over time. By integrating current balances, regular income, and recurring expenses, it provides users with a clear visual roadmap of their financial future and helps them identify exactly when they will reach their goals.",
+        image: projectImage6,
+        github: "https://github.com/Arctruzeh",
+        liveDemo: "https://moolameter.com",
+        technologies: ["Node.js", "Express", "Tailwind CSS", "Interactive Charts", "SQL"],
+        features: [
+            "Interactive financial forecasting charts",
+            "Automatic savings goal calculations",
+            "Income and expense tracking",
+            "Secure user authentication",
+            "Responsive and modern dashboard"
+        ],
+        dateCreated: "2024",
+        challenges: "Creating accurate financial projections required complex mathematical logic for handling compound interest, varying income frequencies, and long-term inflation adjustments while maintaining a smooth user experience.",
+        solutions: "I developed a robust projection engine that processes financial inputs to generate detailed future data points. Interactive charts provide a high-level overview, while detailed tables allow for granular analysis of every projected month."
     }
 } as Record<string, Project>;

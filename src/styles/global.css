@@ -2,32 +2,57 @@
 
 :root {
     /* Background Colors */
-    --bg-primary: #121212;  /* Very dark gray for the main background */
-    --bg-secondary: #1e1e1e; /* Slightly lighter for secondary sections */
-    --bg-tertiary: #2c2c2c;  /* Used for less prominent areas */
+    --bg-primary: #121212;
+    /* Very dark gray for the main background */
+    --bg-secondary: #1e1e1e;
+    /* Slightly lighter for secondary sections */
+    --bg-tertiary: #2c2c2c;
+    /* Used for less prominent areas */
 
     /* Text Colors */
-    --text-primary: #ffffff; /* Pure white for primary text */
-    --text-secondary: #e0e0e0; /* Light gray for secondary text */
-    --text-tertiary: #b3b3b3;  /* Muted gray for tertiary text */
+    --text-primary: #ffffff;
+    /* Pure white for primary text */
+    --text-secondary: #e0e0e0;
+    /* Light gray for secondary text */
+    --text-tertiary: #b3b3b3;
+    /* Muted gray for tertiary text */
 
     /* Accent Colors */
-    --accent-primary:   #c62828; /* A rich, deep red as your main accent */
-    --accent-secondary: #ad1d1d; /* Slightly darker red for variation */
-    --accent-tertiary:  #931717; /* Darker red for subtle highlights */
-    --accent-quaternary: #7a1313; /* Even darker red for depth */
-    --accent-quininary: #621010; /* The darkest red, perfect for strong emphasis */
+    --accent-primary: #c62828;
+    /* A rich, deep red as your main accent */
+    --accent-secondary: #ad1d1d;
+    /* Slightly darker red for variation */
+    --accent-tertiary: #931717;
+    /* Darker red for subtle highlights */
+    --accent-quaternary: #7a1313;
+    /* Even darker red for depth */
+    --accent-quininary: #621010;
+    /* The darkest red, perfect for strong emphasis */
 
     /* Border Colors */
-    --border-primary: #333333; /* A dark gray border for definition */
-    --border-secondary: #444444; /* A slightly lighter gray for secondary borders */
+    --border-primary: #333333;
+    /* A dark gray border for definition */
+    --border-secondary: #444444;
+    /* A slightly lighter gray for secondary borders */
 
     /* Overlay Colors */
-    --overlay-primary: rgba(0, 0, 0, 0.7); /* High-opacity overlay for modals or pop-ups */
-    --overlay-secondary: rgba(0, 0, 0, 0.5); /* Lighter overlay for less intrusive effects */
+    --overlay-primary: rgba(0, 0, 0, 0.7);
+    /* High-opacity overlay for modals or pop-ups */
+    --overlay-secondary: rgba(0, 0, 0, 0.5);
+    /* Lighter overlay for less intrusive effects */
 
     /* Transition */
-    --transition-speed: 0.3s;
+    --transition-speed: 0.2s;
+    --transition-cubic: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Roundedness */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
+    --gradient-shine: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
 * {
@@ -68,11 +93,35 @@ body {
 a {
     color: var(--accent-primary);
     text-decoration: none;
-    transition: color var(--transition-speed) ease;
+    transition: all var(--transition-speed) var(--transition-cubic);
+    position: relative;
 }
 
 a:hover {
     color: var(--accent-secondary);
+}
+
+/* Unified Link Underline Effect */
+.link-underlined {
+    position: relative;
+}
+
+.link-underlined::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--accent-primary);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--transition-speed) var(--transition-cubic);
+}
+
+.link-underlined:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
 .nav {
@@ -171,24 +220,57 @@ a:hover {
 
 /* Button Styles */
 .btn {
-    background-color: var(--accent-primary);
-    color: var(--bg-primary);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
     cursor: pointer;
-    transition: 
-        background-color var(--transition-speed) ease,
-        transform var(--transition-speed) ease;
+    transition: all var(--transition-speed) var(--transition-cubic);
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(198, 40, 40, 0.2);
+}
+
+.btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-primary);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-shine);
+    transition: transform 0.6s ease;
 }
 
 .btn:hover {
-    background-color: var(--accent-secondary);
-    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(198, 40, 40, 0.3);
+    filter: brightness(1.1);
+    color: var(--text-primary);
+}
+
+.btn:hover::before {
+    transform: translateX(200%);
 }
 
 .btn:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
 }
 
 /* Selection Styles */
@@ -204,7 +286,12 @@ a:hover {
 }
 
 /* Heading Styles */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     color: var(--accent-quaternary);
     margin-bottom: 1rem;
 }
