@@ -49,7 +49,7 @@ export const projects = {
         detailedDescription: "'G or I' is an interactive language learning tool designed to help users master the correct usage of words containing 'g' or 'i' in various languages. The application presents users with challenging word choices and provides immediate feedback on their answers, helping to reinforce proper spelling and language rules.",
         image: projectImage2,
         github: "https://github.com/Arctruzeh/gori",
-        liveDemo: "https://g-or-i.netlify.app",
+        liveDemo: "https://projects.ajlato.com/gori",
         technologies: ["HTML5", "CSS3", "JavaScript", "Local Storage API", "Responsive Design"],
         features: [
             "Custom-built question database with varying difficulty levels",
