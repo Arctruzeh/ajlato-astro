@@ -4,8 +4,8 @@ import Footer from "../components/Footer.astro";
 import GtmHead from "../components/gtm-head.astro";
 import GtmBody from "../components/gtm-body.astro";
 import "../styles/global.css";
-import { Image } from 'astro:assets'
-import icon from '../assets/images/code.png'
+import { Image } from "astro:assets";
+import icon from "../assets/images/code.png";
 
 const isHomePage = Astro.url.pathname === "/";
 ---
@@ -20,7 +20,7 @@ const isHomePage = Astro.url.pathname === "/";
         <title>A.J. Latocha</title>
         <GtmHead />
     </head>
-    <body class={isHomePage ? 'home-body' : ''}>
+    <body class={isHomePage ? "home-body" : ""}>
         <GtmBody />
         <Nav />
         <main>
@@ -40,5 +40,12 @@ const isHomePage = Astro.url.pathname === "/";
         padding-top: 72px;
         min-height: calc(100vh - 72px);
         transition: padding-top 0.2s ease;
+    }
+
+    @media (max-width: 768px) {
+        main {
+            padding-top: 0;
+            min-height: 100vh;
+        }
     }
 </style>
