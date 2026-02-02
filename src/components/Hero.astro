@@ -3,10 +3,6 @@
 ---
 
 <div class="hero">
-    <div class="bg"></div>
-    <div class="bg bg2"></div>
-    <div class="bg bg3"></div>
-    <!-- <div class="bg4"></div> -->
     <div class="inner">
         <header>
             <h1>A.J. Latocha</h1>
@@ -20,27 +16,31 @@
 
 <style>
     .hero {
-        position: absolute;
-        top: 0;
-        left: 0;
+        position: relative;
         width: 100%;
-        height: 100%;
+        height: auto; /* Override global .hero height: 100vh */
+        flex: 1;
+        flex-shrink: 0;
         display: flex;
-        align-items: center;
+        flex-direction: column;
         justify-content: center;
+        align-items: center;
         text-align: center;
         color: #fff;
-        overflow: hidden;
+        /* overflow: hidden; Removed to allow scrolling */
     }
+
 
     .inner {
         padding: 2em;
         position: relative;
         z-index: 2;
-        transform: translateY(-72px);
+        /* No transform needed for desktop if layout is correct, or keep tiny adjustment if preferred. 
+           But for mobile we want pure flex centering. */
         transition: transform 0.2s ease;
     }
 
+    /* ... typography ... */
     h1 {
         font-size: 3em;
         margin: 0 0 0.5em 0;
@@ -54,6 +54,19 @@
     }
 
     @media (max-width: 768px) {
+        .hero {
+            /* Mobile: Add padding top to account for fixed Nav overlapping the content */
+            padding-top: 80px !important;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .inner {
+            margin: auto;
+            padding: 1rem;
+        }
+
         h1 {
             font-size: 1.75em;
         }
@@ -63,7 +76,7 @@
         }
 
         .inner {
-            transform: translateY(-40px);
+            transform: none; /* Remove manual offset */
         }
     }
 </style>

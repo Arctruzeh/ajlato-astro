@@ -6,46 +6,84 @@ import GtmBody from "../components/gtm-body.astro";
 import "../styles/global.css";
 import { Image } from "astro:assets";
 import icon from "../assets/images/code.png";
+import { ClientRouter } from "astro:transitions";
 
 const isHomePage = Astro.url.pathname === "/";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:animate="none">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href={icon.src} />
         <meta name="generator" content={Astro.generator} />
         <title>A.J. Latocha</title>
+        <ClientRouter />
         <GtmHead />
     </head>
     <body class={isHomePage ? "home-body" : ""}>
         <GtmBody />
-        <Nav />
+        <div class="bg-container" transition:persist transition:name="bg-container">
+            <div class="bg"></div>
+            <div class="bg bg2"></div>
+            <div class="bg bg3"></div>
+        </div>
+        <Nav transition:persist transition:name="nav" />
         <main>
             <slot />
         </main>
-        <Footer />
+        <Footer transition:persist transition:name="footer" />
     </body>
 </html>
 
+<script>
+    // Ensure background animations persist across page navigations
+    document.addEventListener('astro:before-swap', () => {
+        const bgContainer = document.querySelector('.bg-container');
+        if (bgContainer) {
+            // Store current animation state
+            const bgElements = bgContainer.querySelectorAll('.bg');
+            bgElements.forEach((el, index) => {
+                const computedStyle = window.getComputedStyle(el);
+                const transform = computedStyle.transform;
+                el.setAttribute(`data-transform-${index}`, transform);
+            });
+        }
+    });
+</script>
+
 <style>
+    .bg-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        pointer-events: none;
+    }
+
     .home-body {
-        overflow: hidden;
-        height: 100vh;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
 
     main {
         padding-top: 72px;
-        min-height: calc(100vh - 72px);
+        min-height: 0;
+        flex: 1;
+        position: relative;
+        display: flex;
+        flex-direction: column;
         transition: padding-top 0.2s ease;
     }
 
     @media (max-width: 768px) {
         main {
             padding-top: 0;
-            min-height: 100vh;
+            /* Flex column handles height, no need for 100vh min-height here specifically if flex works */
         }
     }
 </style>

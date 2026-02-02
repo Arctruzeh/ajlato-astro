@@ -11,7 +11,8 @@ const projectsList = Object.entries(projects).map(([slug, data]) => ({
 ---
 
 <Layout>
-    <h1>Projects</h1>
+    <div class="projects-page">
+        <h1>Projects</h1>
     <Modal />
     <div class="projects">
         {
@@ -50,9 +51,15 @@ const projectsList = Object.entries(projects).map(([slug, data]) => ({
             ))
         }
     </div>
+    </div>
 </Layout>
 
 <style>
+    .projects-page {
+        position: relative;
+    }
+
+
     h1 {
         max-width: 1200px;
         margin: 2rem auto;
@@ -60,6 +67,8 @@ const projectsList = Object.entries(projects).map(([slug, data]) => ({
         color: var(--text-primary);
         font-size: 2.5rem;
         text-align: left;
+        position: relative;
+        z-index: 1;
     }
 
     .projects {
