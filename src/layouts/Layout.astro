@@ -86,6 +86,10 @@ const isHomePage = Astro.url.pathname === "/";
 </script>
 
 <style>
+    :root {
+        --nav-height: 72px;
+    }
+
     .bg-container {
         position: fixed;
         top: 0;
@@ -100,13 +104,13 @@ const isHomePage = Astro.url.pathname === "/";
     }
 
     .home-body {
-        min-height: 100vh;
+        min-height: 100dvh; /* Use dvh for better mobile support */
         display: flex;
         flex-direction: column;
     }
 
     main {
-        padding-top: 72px;
+        padding-top: var(--nav-height);
         min-height: 0;
         flex: 1;
         position: relative;
@@ -116,9 +120,9 @@ const isHomePage = Astro.url.pathname === "/";
     }
 
     @media (max-width: 768px) {
+        /* Ensure main always has padding to clear the fixed nav */
         .home-body main {
-            padding-top: 0;
-            /* Flex column handles height, no need for 100vh min-height here specifically if flex works */
+            /* padding-top: var(--nav-height); - inherited from main */
         }
     }
 </style>
