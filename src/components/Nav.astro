@@ -19,7 +19,13 @@ const navLinks: NavLink[] = [
 ];
 ---
 
-<nav class="nav" aria-label="Main Navigation">
+<nav
+  class="nav"
+  aria-label="Main Navigation"
+  transition:name="nav"
+  transition:persist
+  transition:animate="none"
+>
   <div class="nav-content">
     <div class="nav-brand">
       <a href="/" class="nav-logo" aria-label="Home">&lt;A.J. /&gt;</a>
@@ -67,22 +73,48 @@ const navLinks: NavLink[] = [
     const hamburger = document.querySelector(".hamburger") as HTMLButtonElement;
     const navMenu = document.getElementById("nav-menu") as HTMLUListElement;
 
-    hamburger.addEventListener("click", () => {
-      const isExpanded = hamburger.getAttribute("aria-expanded") === "true";
+    if (hamburger && navMenu) {
+      hamburger.addEventListener("click", () => {
+        const isExpanded = hamburger.getAttribute("aria-expanded") === "true";
 
-      hamburger.setAttribute("aria-expanded", String(!isExpanded));
-      navMenu.classList.toggle("nav-links-mobile");
-    });
+        hamburger.setAttribute("aria-expanded", String(!isExpanded));
+        navMenu.classList.toggle("nav-links-mobile");
+      });
 
-    // Close menu when clicking outside
-    document.addEventListener("click", (event) => {
-      const target = event.target as Node;
-      const isClickInsideNav =
-        hamburger.contains(target) || navMenu.contains(target);
+      // Close menu when clicking outside
+      document.addEventListener("click", (event) => {
+        const target = event.target as Node;
+        const isClickInsideNav =
+          hamburger.contains(target) || navMenu.contains(target);
 
-      if (!isClickInsideNav) {
-        hamburger.setAttribute("aria-expanded", "false");
-        navMenu.classList.remove("nav-links-mobile");
+        if (!isClickInsideNav) {
+          hamburger.setAttribute("aria-expanded", "false");
+          navMenu.classList.remove("nav-links-mobile");
+        }
+      });
+    }
+  });
+
+  // Update active state on page transitions
+  document.addEventListener("astro:page-load", () => {
+    const navLinks = document.querySelectorAll(".nav-link");
+    const currentPath = window.location.pathname;
+
+    navLinks.forEach((link) => {
+      const href = link.getAttribute("href");
+      if (href) {
+        // Remove active class from all
+        link.classList.remove("active");
+
+        // Add active class if matches
+        // Match exact path or subpath (except for home '/')
+        const isActive =
+          currentPath === href ||
+          (href !== "/" && currentPath.startsWith(href));
+
+        if (isActive) {
+          link.classList.add("active");
+        }
       }
     });
   });

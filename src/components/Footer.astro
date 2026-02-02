@@ -3,7 +3,12 @@ const isHomePage = Astro.url.pathname === "/";
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class={`footer ${isHomePage ? "home-footer" : ""}`}>
+<footer
+    class={`footer ${isHomePage ? "home-footer" : ""}`}
+    transition:name="footer"
+    transition:persist
+    transition:animate="none"
+>
     <div class="footer-content">
         <div class="job-info">
             <div class="info-chip">

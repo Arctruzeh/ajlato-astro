@@ -24,32 +24,64 @@ const isHomePage = Astro.url.pathname === "/";
     </head>
     <body class={isHomePage ? "home-body" : ""}>
         <GtmBody />
-        <div class="bg-container" transition:persist transition:name="bg-container">
+        <div
+            class="bg-container"
+            transition:persist
+            transition:name="bg-container"
+        >
             <div class="bg"></div>
             <div class="bg bg2"></div>
             <div class="bg bg3"></div>
         </div>
-        <Nav transition:persist transition:name="nav" />
-        <main>
+        <Nav />
+        <main transition:name="main-content" transition:animate="fade">
             <slot />
         </main>
-        <Footer transition:persist transition:name="footer" />
+        <Footer />
     </body>
 </html>
 
 <script>
-    // Ensure background animations persist across page navigations
-    document.addEventListener('astro:before-swap', () => {
-        const bgContainer = document.querySelector('.bg-container');
-        if (bgContainer) {
-            // Store current animation state
-            const bgElements = bgContainer.querySelectorAll('.bg');
-            bgElements.forEach((el, index) => {
-                const computedStyle = window.getComputedStyle(el);
-                const transform = computedStyle.transform;
-                el.setAttribute(`data-transform-${index}`, transform);
+    // Use Web Animations API for persistent background animations
+    // This prevents the animation resetting ("red flash") when the element is moved in the DOM during transitions
+    document.addEventListener("astro:page-load", () => {
+        const bgContainer = document.querySelector(".bg-container");
+        if (!bgContainer) return;
+
+        const bgElements = bgContainer.querySelectorAll(".bg");
+
+        // Animation Configuration
+        const keyframes = [
+            { transform: "translateX(-25%)" },
+            { transform: "translateX(25%)" },
+        ];
+
+        const commonOptions = {
+            easing: "ease-in-out",
+            iterations: Infinity,
+        };
+
+        // Initialize animations if not already running
+        bgElements.forEach((el, index) => {
+            // Check if animation is already running
+            if (el.getAnimations().length > 0) return;
+
+            let duration = 10000; // Default 10s
+            let direction: PlaybackDirection = "alternate";
+
+            if (el.classList.contains("bg2")) {
+                duration = 11000;
+                direction = "alternate-reverse";
+            } else if (el.classList.contains("bg3")) {
+                duration = 12000; // 12s
+            }
+
+            el.animate(keyframes, {
+                ...commonOptions,
+                duration: duration,
+                direction: direction,
             });
-        }
+        });
     });
 </script>
 
@@ -62,6 +94,9 @@ const isHomePage = Astro.url.pathname === "/";
         bottom: 0;
         z-index: -1;
         pointer-events: none;
+        background-color: var(
+            --bg-primary
+        ); /* Moved here for persistent background during transitions */
     }
 
     .home-body {
