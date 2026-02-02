@@ -97,6 +97,14 @@ const navLinks: NavLink[] = [
 
   // Update active state on page transitions
   document.addEventListener("astro:page-load", () => {
+    // Close mobile menu on page load
+    const hamburger = document.querySelector(".hamburger") as HTMLButtonElement;
+    const navMenu = document.getElementById("nav-menu") as HTMLUListElement;
+    if (hamburger && navMenu) {
+      hamburger.setAttribute("aria-expanded", "false");
+      navMenu.classList.remove("nav-links-mobile");
+    }
+
     const navLinks = document.querySelectorAll(".nav-link");
     const currentPath = window.location.pathname;
 

@@ -101,6 +101,8 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     /* Prevent horizontal scroll from background animations */
+    display: flex;
+    flex-direction: column;
 }
 
 a {

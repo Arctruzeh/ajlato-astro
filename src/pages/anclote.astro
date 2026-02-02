@@ -1,8 +1,8 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
-import { fishingData } from '../data/fishing-spots.js';
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { fishingData } from "../data/fishing-spots.js";
 
 // Type definitions
 type FishingSpotSection = {
@@ -14,7 +14,12 @@ type FishingSpotSection = {
 };
 
 type FishingSpotData = {
-    [key in 'Anclote North' | 'Dutchmen Key North' | 'Dutchmen Key South' | 'Anclote South' | 'Anclote River']: {
+    [key in
+        | "Anclote North"
+        | "Dutchmen Key North"
+        | "Dutchmen Key South"
+        | "Anclote South"
+        | "Anclote River"]: {
         image: ImageMetadata;
         sections: FishingSpotSection[];
     };
@@ -30,86 +35,155 @@ const firstSpot = spotKeys[0];
 <Layout title="Anclote Fishing Spots">
     <div class="anclote-container">
         <div class="selection-bar">
-            {spotKeys.map((spot, index) => (
-                <button 
-                    class={`spot-selector ${index === 0 ? 'active' : ''}`} 
-                    data-spot={spot}
-                >
-                    <Image 
-                        src={typedFishingData[spot].image}
-                        alt={`${spot} background`} 
-                        class="spot-selector-background"
-                        width={200}
-                        height={100}
-                        quality={80}
-                        loading="eager"
-                    />
-                    <span class="spot-selector-text">{spot}</span>
-                </button>
-            ))}
+            {
+                spotKeys.map((spot, index) => (
+                    <button
+                        class={`spot-selector ${index === 0 ? "active" : ""}`}
+                        data-spot={spot}
+                    >
+                        <Image
+                            src={typedFishingData[spot].image}
+                            alt={`${spot} background`}
+                            class="spot-selector-background"
+                            width={200}
+                            height={100}
+                            quality={80}
+                            loading="eager"
+                        />
+                        <span class="spot-selector-text">{spot}</span>
+                    </button>
+                ))
+            }
         </div>
 
         <div class="content-container">
             <!-- Accordion on Left -->
             <div class="accordion-container">
-                {spotKeys.map((spot, spotIndex) => (
-                    <div 
-                        class={`accordion-item ${spotIndex === 0 ? 'active' : ''}`} 
-                        data-spot={spot}
-                    >
-                        {typedFishingData[spot].sections.map((section, sectionIndex) => {
-                            const uniqueId = `${spot.replace(/\s+/g, '-').toLowerCase()}-section-${sectionIndex}`;
-                            const isExpanded = spotIndex === 0 && sectionIndex === 0;
-                            return (
-                                <div class="accordion-section">
-                                    <h3 class="accordion-section-header">
-                                        <button 
-                                            type="button"
-                                            class="accordion-title"
-                                            aria-expanded={isExpanded}
-                                            aria-controls={`${uniqueId}-content`}
-                                            id={`${uniqueId}-header`}
-                                        >
-                                            {section.title}
-                                            <span class="accordion-toggle" aria-hidden="true">
-                                                {isExpanded ? '▼' : '►'}
-                                            </span>
-                                        </button>
-                                    </h3>
-                                    <div 
-                                        id={`${uniqueId}-content`}
-                                        class={`accordion-description ${isExpanded ? 'expanded' : ''}`}
-                                        role="region"
-                                        aria-labelledby={`${uniqueId}-header`}
-                                    >
-                                        <p>{section.description}</p>
-                                        <div class="section-metadata">
-                                            <div class="metadata-item">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M17.657 16.657L19.414 18a2 2 0 0 0 2.828 0l1.414-1.414a2 2 0 0 0 0-2.828l-8.486-8.485a2 2 0 0 0-2.828 0L3.757 13.757a2 2 0 0 0 0 2.828L5.172 17.9"></path>
-                                                    <path d="M13.414 7.757l-8.485 8.485a2 2 0 1 0 2.828 2.828l8.485-8.485"></path>
-                                                </svg>
-                                                <div class="metadata-content">
-                                                    <span class="metadata-label">Best Tide</span>
-                                                    <span class="metadata-value">{section.tide}</span>
-                                                </div>
-                                            </div>
-                                            <div class="metadata-item">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                                </svg>
-                                                <div class="metadata-content">
-                                                    <span class="metadata-label">Best Season</span>
-                                                    <span class="metadata-value">{section.season}</span>
-                                                </div>
-                                            </div>
-                                            <div class="metadata-item">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M295.767,73.546h0.012c0.008,0,0.02-0.008,0.029-0.008L295.767,73.546z"/>
-                                                    <path d="M487.901,273.292c2.203-6.475,6.656-19.836,11.174-35.207c3.155-10.734,6.322-22.374,8.744-33.305
+                {
+                    spotKeys.map((spot, spotIndex) => (
+                        <div
+                            class={`accordion-item ${spotIndex === 0 ? "active" : ""}`}
+                            data-spot={spot}
+                        >
+                            {typedFishingData[spot].sections.map(
+                                (section, sectionIndex) => {
+                                    const uniqueId = `${spot.replace(/\s+/g, "-").toLowerCase()}-section-${sectionIndex}`;
+                                    const isExpanded =
+                                        spotIndex === 0 && sectionIndex === 0;
+                                    return (
+                                        <div class="accordion-section">
+                                            <h3 class="accordion-section-header">
+                                                <button
+                                                    type="button"
+                                                    class="accordion-title"
+                                                    aria-expanded={isExpanded}
+                                                    aria-controls={`${uniqueId}-content`}
+                                                    id={`${uniqueId}-header`}
+                                                >
+                                                    {section.title}
+                                                    <span
+                                                        class="accordion-toggle"
+                                                        aria-hidden="true"
+                                                    >
+                                                        {isExpanded ? "▼" : "►"}
+                                                    </span>
+                                                </button>
+                                            </h3>
+                                            <div
+                                                id={`${uniqueId}-content`}
+                                                class={`accordion-description ${isExpanded ? "expanded" : ""}`}
+                                                role="region"
+                                                aria-labelledby={`${uniqueId}-header`}
+                                            >
+                                                <p>{section.description}</p>
+                                                <div class="section-metadata">
+                                                    <div class="metadata-item">
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            width="20"
+                                                            height="20"
+                                                            viewBox="0 0 24 24"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            stroke-width="2"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                        >
+                                                            <path d="M17.657 16.657L19.414 18a2 2 0 0 0 2.828 0l1.414-1.414a2 2 0 0 0 0-2.828l-8.486-8.485a2 2 0 0 0-2.828 0L3.757 13.757a2 2 0 0 0 0 2.828L5.172 17.9" />
+                                                            <path d="M13.414 7.757l-8.485 8.485a2 2 0 1 0 2.828 2.828l8.485-8.485" />
+                                                        </svg>
+                                                        <div class="metadata-content">
+                                                            <span class="metadata-label">
+                                                                Best Tide
+                                                            </span>
+                                                            <span class="metadata-value">
+                                                                {section.tide}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="metadata-item">
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            width="20"
+                                                            height="20"
+                                                            viewBox="0 0 24 24"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            stroke-width="2"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                        >
+                                                            <rect
+                                                                x="3"
+                                                                y="4"
+                                                                width="18"
+                                                                height="18"
+                                                                rx="2"
+                                                                ry="2"
+                                                            />
+                                                            <line
+                                                                x1="16"
+                                                                y1="2"
+                                                                x2="16"
+                                                                y2="6"
+                                                            />
+                                                            <line
+                                                                x1="8"
+                                                                y1="2"
+                                                                x2="8"
+                                                                y2="6"
+                                                            />
+                                                            <line
+                                                                x1="3"
+                                                                y1="10"
+                                                                x2="21"
+                                                                y2="10"
+                                                            />
+                                                        </svg>
+                                                        <div class="metadata-content">
+                                                            <span class="metadata-label">
+                                                                Best Season
+                                                            </span>
+                                                            <span class="metadata-value">
+                                                                {section.season}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="metadata-item">
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            width="24"
+                                                            height="24"
+                                                            viewBox="0 0 512 512"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            stroke-width="20"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                        >
+                                                            <path d="M295.767,73.546h0.012c0.008,0,0.02-0.008,0.029-0.008L295.767,73.546z" />
+                                                            <path
+                                                                d="M487.901,273.292c2.203-6.475,6.656-19.836,11.174-35.207c3.155-10.734,6.322-22.374,8.744-33.305
                                                         c2.406-10.989,4.143-21.022,4.18-29.729c-0.02-3.394-0.239-6.623-1.223-10.149c-0.511-1.763-1.232-3.64-2.472-5.585
                                                         c-1.223-1.928-3.068-3.971-5.56-5.454c-3.488-2.092-7.2-2.743-10.338-2.735c-4.926,0.049-8.995,1.326-13.077,2.965
                                                         c-7.068,2.933-14.214,7.414-21.727,12.801c-11.203,8.09-22.958,18.271-33.354,28.231c-6.726,6.458-12.703,12.677-17.707,18.362
@@ -124,127 +198,178 @@ const firstSpot = spotKeys[0];
                                                         c10.977,11.113,24.4,23.23,37.288,32.901c6.466,4.836,12.773,9.061,18.86,12.29c3.056,1.614,6.058,2.983,9.156,4.029
                                                         c3.106,1.029,6.306,1.796,10.005,1.82c3.134,0,6.833-0.642,10.322-2.726l-0.309,0.189l0.329-0.197
                                                         c2.492-1.492,4.333-3.526,5.556-5.462c1.846-2.932,2.587-5.634,3.077-8.171c0.465-2.554,0.614-5.018,0.618-7.554
-                                                        c-0.037-8.708-1.775-18.749-4.18-29.738C501.954,315.403,491.67,284.364,487.901,273.292z"/>
-                                                    <path d="M98.81,238.925c-10.824,0-19.597,8.773-19.597,19.589c0,10.832,8.773,19.606,19.597,19.606
-                                                        c10.82,0,19.594-8.774,19.594-19.606C118.403,247.698,109.63,238.925,98.81,238.925z"/>
-                                                </svg>
-                                                <div class="metadata-content">
-                                                    <span class="metadata-label">Fish Species</span>
-                                                    <span class="metadata-value">{section.fish.join(', ')}</span>
+                                                        c-0.037-8.708-1.775-18.749-4.18-29.738C501.954,315.403,491.67,284.364,487.901,273.292z"
+                                                            />
+                                                            <path
+                                                                d="M98.81,238.925c-10.824,0-19.597,8.773-19.597,19.589c0,10.832,8.773,19.606,19.597,19.606
+                                                        c10.82,0,19.594-8.774,19.594-19.606C118.403,247.698,109.63,238.925,98.81,238.925z"
+                                                            />
+                                                        </svg>
+                                                        <div class="metadata-content">
+                                                            <span class="metadata-label">
+                                                                Fish Species
+                                                            </span>
+                                                            <span class="metadata-value">
+                                                                {section.fish.join(
+                                                                    ", ",
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                ))}
+                                    );
+                                },
+                            )}
+                        </div>
+                    ))
+                }
             </div>
 
             <!-- Image on Right -->
             <div class="image-container">
-                {spotKeys.map((spot, index) => (
-                    <Image 
-                        src={typedFishingData[spot].image} 
-                        alt={`Anclote Fishing Spot ${spot}`} 
-                        class={`spot-image ${index === 0 ? 'active' : ''}`}
-                        data-spot={spot}
-                        loading="eager"
-                    />
-                ))}
+                {
+                    spotKeys.map((spot, index) => (
+                        <Image
+                            src={typedFishingData[spot].image}
+                            alt={`Anclote Fishing Spot ${spot}`}
+                            class={`spot-image ${index === 0 ? "active" : ""}`}
+                            data-spot={spot}
+                            loading="eager"
+                        />
+                    ))
+                }
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const spotSelectors = document.querySelectorAll<HTMLButtonElement>('.spot-selector');
-            const accordionItems = document.querySelectorAll<HTMLDivElement>('.accordion-item');
-            const spotImages = document.querySelectorAll<HTMLImageElement>('.spot-image');
-            const accordionTitles = document.querySelectorAll<HTMLButtonElement>('.accordion-title');
-            const accordionDescriptions = document.querySelectorAll<HTMLDivElement>('.accordion-description');
+        document.addEventListener("astro:page-load", () => {
+            const spotSelectors =
+                document.querySelectorAll<HTMLButtonElement>(".spot-selector");
+            const accordionItems =
+                document.querySelectorAll<HTMLDivElement>(".accordion-item");
+            const spotImages =
+                document.querySelectorAll<HTMLImageElement>(".spot-image");
+            const accordionTitles =
+                document.querySelectorAll<HTMLButtonElement>(
+                    ".accordion-title",
+                );
+            const accordionDescriptions =
+                document.querySelectorAll<HTMLDivElement>(
+                    ".accordion-description",
+                );
 
             // Spot Selection Logic
-            spotSelectors.forEach(selector => {
-                selector.addEventListener('click', () => {
-                    const spot = selector.getAttribute('data-spot');
+            spotSelectors.forEach((selector) => {
+                selector.addEventListener("click", () => {
+                    const spot = selector.getAttribute("data-spot");
 
                     // Update active states for spot selection
-                    spotSelectors.forEach(s => s.classList.remove('active'));
-                    selector.classList.add('active');
+                    spotSelectors.forEach((s) => s.classList.remove("active"));
+                    selector.classList.add("active");
 
                     // Handle accordion items
-                    accordionItems.forEach(item => {
-                        item.classList.remove('active');
-                        if (item.getAttribute('data-spot') === spot) {
-                            item.classList.add('active');
-                            
+                    accordionItems.forEach((item) => {
+                        item.classList.remove("active");
+                        if (item.getAttribute("data-spot") === spot) {
+                            item.classList.add("active");
+
                             // Get all titles and descriptions in this accordion item
-                            const itemTitles = item.querySelectorAll('.accordion-title');
-                            const itemDescriptions = item.querySelectorAll('.accordion-description');
-                            
+                            const itemTitles =
+                                item.querySelectorAll(".accordion-title");
+                            const itemDescriptions = item.querySelectorAll(
+                                ".accordion-description",
+                            );
+
                             // Reset all sections in this accordion item
                             itemTitles.forEach((title, index) => {
                                 const description = itemDescriptions[index];
-                                const toggle = title.querySelector('.accordion-toggle');
-                                
+                                const toggle =
+                                    title.querySelector(".accordion-toggle");
+
                                 // Close all sections
-                                title.setAttribute('aria-expanded', 'false');
-                                description.classList.remove('expanded');
-                                if (toggle) toggle.textContent = '►';
-                                
+                                title.setAttribute("aria-expanded", "false");
+                                description.classList.remove("expanded");
+                                if (toggle) toggle.textContent = "►";
+
                                 // Expand first section
                                 if (index === 0) {
-                                    title.setAttribute('aria-expanded', 'true');
-                                    description.classList.add('expanded');
-                                    if (toggle) toggle.textContent = '▼';
+                                    title.setAttribute("aria-expanded", "true");
+                                    description.classList.add("expanded");
+                                    if (toggle) toggle.textContent = "▼";
                                 }
                             });
                         }
                     });
 
                     // Handle images
-                    spotImages.forEach(image => {
-                        image.classList.remove('active');
-                        if (image.getAttribute('data-spot') === spot) {
-                            image.classList.add('active');
+                    spotImages.forEach((image) => {
+                        image.classList.remove("active");
+                        if (image.getAttribute("data-spot") === spot) {
+                            image.classList.add("active");
                         }
                     });
                 });
             });
 
             // Accordion Expansion Logic
-            accordionTitles.forEach(title => {
-                title.addEventListener('click', () => {
-                    const description = title.closest('.accordion-section')?.querySelector('.accordion-description');
-                    const toggle = title.querySelector('.accordion-toggle');
-                    const isCurrentlyExpanded = title.getAttribute('aria-expanded') === 'true';
+            accordionTitles.forEach((title) => {
+                title.addEventListener("click", () => {
+                    const description = title
+                        .closest(".accordion-section")
+                        ?.querySelector(".accordion-description");
+                    const toggle = title.querySelector(".accordion-toggle");
+                    const isCurrentlyExpanded =
+                        title.getAttribute("aria-expanded") === "true";
 
                     if (!description) return;
 
                     // Close all other sections in the same accordion item
-                    const parentAccordionItem = title.closest('.accordion-item');
+                    const parentAccordionItem =
+                        title.closest(".accordion-item");
                     if (parentAccordionItem) {
-                        const siblingTitles = parentAccordionItem.querySelectorAll('.accordion-title');
-                        siblingTitles.forEach(siblingTitle => {
+                        const siblingTitles =
+                            parentAccordionItem.querySelectorAll(
+                                ".accordion-title",
+                            );
+                        siblingTitles.forEach((siblingTitle) => {
                             if (siblingTitle !== title) {
-                                const siblingDescription = siblingTitle.closest('.accordion-section')?.querySelector('.accordion-description');
-                                const siblingToggle = siblingTitle.querySelector('.accordion-toggle');
-                                
-                                siblingTitle.setAttribute('aria-expanded', 'false');
-                                siblingDescription?.classList.remove('expanded');
-                                if (siblingToggle) siblingToggle.textContent = '►';
+                                const siblingDescription = siblingTitle
+                                    .closest(".accordion-section")
+                                    ?.querySelector(".accordion-description");
+                                const siblingToggle =
+                                    siblingTitle.querySelector(
+                                        ".accordion-toggle",
+                                    );
+
+                                siblingTitle.setAttribute(
+                                    "aria-expanded",
+                                    "false",
+                                );
+                                siblingDescription?.classList.remove(
+                                    "expanded",
+                                );
+                                if (siblingToggle)
+                                    siblingToggle.textContent = "►";
                             }
                         });
                     }
 
                     // Toggle current section
-                    title.setAttribute('aria-expanded', isCurrentlyExpanded ? 'false' : 'true');
-                    description.classList.toggle('expanded');
-                    
+                    title.setAttribute(
+                        "aria-expanded",
+                        isCurrentlyExpanded ? "false" : "true",
+                    );
+                    description.classList.toggle("expanded");
+
                     if (toggle) {
-                        toggle.textContent = description.classList.contains('expanded') ? '▼' : '►';
+                        toggle.textContent = description.classList.contains(
+                            "expanded",
+                        )
+                            ? "▼"
+                            : "►";
                     }
                 });
             });
@@ -309,7 +434,11 @@ const firstSpot = spotKeys[0];
             z-index: 2;
             width: 100%;
             padding: 0.75rem;
-            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                rgba(0, 0, 0, 0.7) 100%
+            );
             color: var(--text-primary);
             text-align: left;
             text-transform: uppercase;
@@ -389,9 +518,9 @@ const firstSpot = spotKeys[0];
             opacity: 0;
             padding: 0 1rem;
             color: var(--text-secondary);
-            transition: 
-                max-height var(--transition-speed) ease, 
-                opacity var(--transition-speed) ease, 
+            transition:
+                max-height var(--transition-speed) ease,
+                opacity var(--transition-speed) ease,
                 padding var(--transition-speed) ease;
         }
 
@@ -419,7 +548,9 @@ const firstSpot = spotKeys[0];
             padding: 0.5rem 0.75rem;
             background-color: var(--dark-bg-secondary);
             border-radius: 6px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
         }
 
         .metadata-item:hover {
