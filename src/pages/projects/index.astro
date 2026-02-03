@@ -94,11 +94,13 @@ const projectsList = projects.sort((a, b) => a.data.order - b.data.order);
     .project-media {
         width: 100%;
         position: relative;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
     }
 
     .project-media img {
         width: 100%;
-        height: auto;
+        height: 100%;
         display: block;
         object-fit: cover;
     }
