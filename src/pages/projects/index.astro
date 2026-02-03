@@ -5,17 +5,114 @@ import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
 const projects = await getCollection("projects");
-const projectsList = projects.sort((a, b) => a.data.order - b.data.order);
+const projectsList = projects.sort((a, b) => {
+    return (
+        new Date(b.data.dateCreated).getTime() -
+        new Date(a.data.dateCreated).getTime()
+    );
+});
+
+const allTechnologies = [
+    ...new Set(projects.flatMap((project) => project.data.technologies)),
+].sort();
 ---
 
 <Layout>
     <div class="projects-page">
         <h1>Projects</h1>
         <Modal />
-        <div class="projects">
+
+        <div class="controls">
+            <div class="top-bar">
+                <div class="search-wrapper">
+                    <span class="search-icon">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </span>
+                    <input
+                        type="text"
+                        id="search-input"
+                        class="search-input"
+                        placeholder="Search projects or technologies..."
+                        aria-label="Search projects"
+                    />
+                </div>
+
+                <div class="select-wrapper">
+                    <select id="sort-select" aria-label="Sort projects">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="az">Name (A-Z)</option>
+                        <option value="za">Name (Z-A)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filters-section">
+                <div class="filters-header">
+                    <span class="filter-label">Technologies</span>
+                    <div class="logic-toggle">
+                        <div class="logic-option active" data-logic="and">
+                            Match All
+                        </div>
+                        <div class="logic-option" data-logic="or">
+                            Match Any
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-tags-wrapper">
+                    <button
+                        id="scroll-left"
+                        class="scroll-btn left"
+                        aria-label="Scroll left">‹</button
+                    >
+                    <div class="filter-tags" id="filter-tags">
+                        <button class="filter-tag active" data-tech="all"
+                            >All</button
+                        >
+                        {
+                            allTechnologies.map((tech) => (
+                                <button class="filter-tag" data-tech={tech}>
+                                    {tech}
+                                </button>
+                            ))
+                        }
+                    </div>
+                    <button
+                        id="scroll-right"
+                        class="scroll-btn right"
+                        aria-label="Scroll right">›</button
+                    >
+                    <div class="scroll-gradient-right"></div>
+                    <div class="scroll-gradient-left"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="projects" id="projects-grid">
             {
                 projectsList.map((project, index) => (
-                    <div class="project">
+                    <div
+                        class="project"
+                        data-date={project.data.dateCreated}
+                        data-name={project.data.name}
+                        data-technologies={JSON.stringify(
+                            project.data.technologies,
+                        )}
+                    >
                         <div class="project-media">
                             <Image
                                 src={project.data.image}
@@ -52,28 +149,512 @@ const projectsList = projects.sort((a, b) => a.data.order - b.data.order);
     </div>
 </Layout>
 
+<script>
+    document.addEventListener("astro:page-load", () => {
+        const projectsGrid = document.getElementById("projects-grid");
+        const sortSelect = document.getElementById(
+            "sort-select",
+        ) as HTMLSelectElement | null;
+        const searchInput = document.getElementById(
+            "search-input",
+        ) as HTMLInputElement | null;
+        const filterTags = document.querySelectorAll(".filter-tag");
+        const logicOptions = document.querySelectorAll(".logic-option");
+        const projects = document.querySelectorAll(
+            ".project",
+        ) as NodeListOf<HTMLElement>;
+
+        const filterTagsContainer = document.getElementById("filter-tags");
+        const scrollLeftBtn = document.getElementById("scroll-left");
+        const scrollRightBtn = document.getElementById("scroll-right");
+        const gradientLeft = document.querySelector(
+            ".scroll-gradient-left",
+        ) as HTMLElement;
+        const gradientRight = document.querySelector(
+            ".scroll-gradient-right",
+        ) as HTMLElement;
+
+        if (
+            !projectsGrid ||
+            !sortSelect ||
+            !searchInput ||
+            !filterTagsContainer
+        )
+            return;
+
+        let currentSort = "newest";
+        let activeFilters = new Set<string>();
+        let isOrLogic = false; // false = AND, true = OR
+        let searchQuery = "";
+
+        // --- Scroll Logic ---
+        function updateScrollState() {
+            if (!filterTagsContainer) return;
+            const scrollLeft = filterTagsContainer.scrollLeft;
+            const scrollWidth = filterTagsContainer.scrollWidth;
+            const clientWidth = filterTagsContainer.clientWidth;
+
+            // Show/Hide Left Button
+            if (scrollLeft > 10) {
+                scrollLeftBtn?.classList.add("visible");
+                if (gradientLeft) gradientLeft.style.opacity = "1";
+            } else {
+                scrollLeftBtn?.classList.remove("visible");
+                if (gradientLeft) gradientLeft.style.opacity = "0";
+            }
+
+            // Show/Hide Right Button
+            if (scrollLeft + clientWidth < scrollWidth - 10) {
+                scrollRightBtn?.classList.add("visible");
+                if (gradientRight) gradientRight.style.opacity = "1";
+            } else {
+                scrollRightBtn?.classList.remove("visible");
+                if (gradientRight) gradientRight.style.opacity = "0";
+            }
+        }
+
+        // Initialize scroll buttons
+        updateScrollState();
+        filterTagsContainer.addEventListener("scroll", updateScrollState);
+        new ResizeObserver(updateScrollState).observe(filterTagsContainer);
+
+        scrollLeftBtn?.addEventListener("click", () => {
+            filterTagsContainer.scrollBy({ left: -200, behavior: "smooth" });
+        });
+
+        scrollRightBtn?.addEventListener("click", () => {
+            filterTagsContainer.scrollBy({ left: 200, behavior: "smooth" });
+        });
+
+        function sortProjects(sortValue: string) {
+            const projectsArray = Array.from(projects);
+            const sorted = projectsArray.sort((a, b) => {
+                // If currently filtered out (hidden), keep them at end?
+                // Actually sort operates on all, display just hides them
+
+                if (sortValue === "newest") {
+                    return (
+                        new Date(b.dataset.date!).getTime() -
+                        new Date(a.dataset.date!).getTime()
+                    );
+                } else if (sortValue === "oldest") {
+                    return (
+                        new Date(a.dataset.date!).getTime() -
+                        new Date(b.dataset.date!).getTime()
+                    );
+                } else if (sortValue === "az") {
+                    return a.dataset.name!.localeCompare(b.dataset.name!);
+                } else if (sortValue === "za") {
+                    return b.dataset.name!.localeCompare(a.dataset.name!);
+                }
+                return 0;
+            });
+
+            // Re-append in new order
+            sorted.forEach((project) => projectsGrid!.appendChild(project));
+        }
+
+        function filterProjects() {
+            projects.forEach((project) => {
+                const techs = JSON.parse(project.dataset.technologies || "[]");
+                const projectName = (project.dataset.name || "").toLowerCase();
+                // Simple search against name. Could expand to description if accessible.
+                // We'll also check the h2 and p content just in case the dataset isn't enough,
+                // but for performance dataset is better. Let's use dataset.name for now.
+
+                // Matches Search?
+                const matchesSearch =
+                    projectName.includes(searchQuery.toLowerCase()) ||
+                    techs.some((t: string) =>
+                        t.toLowerCase().includes(searchQuery.toLowerCase()),
+                    );
+
+                // Matches Filters?
+                let matchesFilters = false;
+                if (activeFilters.size === 0) {
+                    matchesFilters = true;
+                } else {
+                    if (isOrLogic) {
+                        // OR: active if includes ANY
+                        matchesFilters = [...activeFilters].some((filter) =>
+                            techs.includes(filter),
+                        );
+                    } else {
+                        // AND: active if includes ALL
+                        matchesFilters = [...activeFilters].every((filter) =>
+                            techs.includes(filter),
+                        );
+                    }
+                }
+
+                const isVisible = matchesSearch && matchesFilters;
+                project.style.display = isVisible ? "flex" : "none";
+
+                // Animate entry?
+                if (isVisible) {
+                    project.style.opacity = "1";
+                    project.style.transform = "translateY(0)";
+                } else {
+                    // project.style.opacity = "0";
+                    // project.style.transform = "translateY(10px)";
+                    // Simple display none is better for layout reflow
+                }
+            });
+        }
+
+        // --- Event Listeners ---
+
+        // Sort
+        sortSelect.addEventListener("change", (e) => {
+            const target = e.target as HTMLSelectElement;
+            currentSort = target.value;
+            sortProjects(currentSort);
+        });
+
+        // Search
+        searchInput.addEventListener("input", (e) => {
+            searchQuery = (e.target as HTMLInputElement).value;
+            filterProjects();
+        });
+
+        // Logic Toggle
+        logicOptions.forEach((option) => {
+            option.addEventListener("click", () => {
+                // Update UI
+                logicOptions.forEach((opt) => opt.classList.remove("active"));
+                option.classList.add("active");
+
+                // Update Logic
+                const logicType = (option as HTMLElement).dataset.logic;
+                isOrLogic = logicType === "or";
+
+                filterProjects();
+            });
+        });
+
+        // Filters
+        filterTags.forEach((tag) => {
+            tag.addEventListener("click", () => {
+                const tech = (tag as HTMLElement).dataset.tech;
+
+                if (tech === "all") {
+                    // Clear all filters
+                    activeFilters.clear();
+                    filterTags.forEach((t) => t.classList.remove("active"));
+                    // Set "All" to active
+                    tag.classList.add("active");
+                } else if (tech) {
+                    // Remove "All" active state if checking a specific tag
+                    const allBtn = document.querySelector(
+                        '.filter-tag[data-tech="all"]',
+                    );
+                    if (allBtn) allBtn.classList.remove("active");
+
+                    if (activeFilters.has(tech)) {
+                        activeFilters.delete(tech);
+                        tag.classList.remove("active");
+                    } else {
+                        activeFilters.add(tech);
+                        tag.classList.add("active");
+                    }
+
+                    // If no filters left, revert to "All"
+                    if (activeFilters.size === 0) {
+                        if (allBtn) allBtn.classList.add("active");
+                    }
+                }
+
+                filterProjects();
+            });
+        });
+    });
+</script>
+
 <style>
+    .controls {
+        max-width: 1200px;
+        margin: 0 auto 2rem;
+        padding: 0 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Top Bar: Search and Sort */
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.8rem 1rem 0.8rem 2.5rem;
+        border-radius: 12px;
+        background-color: var(--bg-secondary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.1);
+        background-color: var(--bg-tertiary);
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-tertiary);
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .select-wrapper {
+        position: relative;
+    }
+
+    .select-wrapper select {
+        appearance: none;
+        padding: 0.8rem 2.5rem 0.8rem 1.2rem;
+        border-radius: 12px;
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 160px;
+    }
+
+    .select-wrapper::after {
+        content: "▼";
+        position: absolute;
+        right: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.7rem;
+        color: var(--text-tertiary);
+        pointer-events: none;
+    }
+
+    .select-wrapper select:hover {
+        border-color: var(--accent-primary);
+        background-color: var(--bg-tertiary);
+    }
+
+    .select-wrapper select:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+    }
+
+    /* Filters Section */
+    .filters-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .filters-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .filter-label {
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+    }
+
+    /* Logic Toggle - Segmented Control Style */
+    .logic-toggle {
+        display: flex;
+        background: var(--bg-secondary);
+        padding: 4px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .logic-option {
+        padding: 4px 12px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        border-radius: 6px;
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+
+    .logic-option.active {
+        background-color: var(--border-primary);
+        color: var(--text-primary);
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Filter Tag Scroll Container */
+    .filter-tags-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .filter-tags {
+        display: flex;
+        gap: 0.6rem;
+        overflow-x: auto;
+        padding: 0.5rem 0.5rem; /* Add horizontal padding for safety */
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        width: 100%;
+    }
+
+    .filter-tags::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+
+    .scroll-btn {
+        position: absolute;
+        z-index: 3;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--bg-tertiary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.2s ease;
+        font-size: 1.2rem;
+        line-height: 1;
+        padding-bottom: 2px; /* Center adjustment */
+    }
+
+    .scroll-btn.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .scroll-btn:hover {
+        background: var(--accent-primary);
+        color: white;
+        border-color: var(--accent-primary);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .scroll-btn.left {
+        left: -16px;
+    }
+
+    .scroll-btn.right {
+        right: -16px;
+    }
+
+    /* Gradients for cues */
+    .scroll-gradient-right {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 40px;
+        background: linear-gradient(to right, transparent, var(--bg-primary));
+        pointer-events: none;
+        z-index: 2;
+        transition: opacity 0.2s;
+    }
+
+    .scroll-gradient-left {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 40px;
+        background: linear-gradient(to left, transparent, var(--bg-primary));
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    /* Hide wrapper buttons and show gradients properly on mobile? */
+    /* Actually buttons are good on desktop, touch is good on mobile. */
+
+    .filter-tag {
+        flex: 0 0 auto;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        background-color: var(--bg-secondary);
+        color: var(--text-secondary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.85rem;
+        font-weight: 500;
+        user-select: none;
+    }
+
+    .filter-tag:hover {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        border-color: var(--text-tertiary);
+        transform: translateY(-1px);
+    }
+
+    .filter-tag.active {
+        background-color: var(--accent-primary);
+        color: white;
+        border-color: var(--accent-primary);
+        box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.25);
+    }
+
     .projects-page {
         position: relative;
+        min-height: 80vh;
     }
 
     h1 {
         max-width: 1200px;
-        margin: 2rem auto;
+        margin: 3rem auto 2rem;
         padding: 0 2rem;
         color: var(--text-primary);
-        font-size: 2.5rem;
-        text-align: left;
-        position: relative;
-        z-index: 1;
+        font-size: 3.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
     }
 
     .projects {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2.5rem;
         max-width: 1200px;
-        margin: 2rem auto;
+        margin: 1rem auto 4rem;
         padding: 0 2rem;
     }
 
@@ -81,98 +662,119 @@ const projectsList = projects.sort((a, b) => a.data.order - b.data.order);
         display: flex;
         flex-direction: column;
         background-color: var(--bg-secondary);
-        border-radius: 8px;
+        border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform var(--transition-speed) ease;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
     }
 
     .project:hover {
-        /* Remove scale for better stability and accessibility */
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 255, 255, 0.1);
     }
 
     .project-media {
         width: 100%;
-        position: relative;
         aspect-ratio: 16 / 9;
         overflow: hidden;
+        background: var(--bg-tertiary);
     }
 
     .project-media img {
         width: 100%;
         height: 100%;
-        display: block;
         object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .project:hover .project-media img {
+        transform: scale(1.05);
     }
 
     .project-content {
-        padding: 1.5rem;
-        background-color: var(--overlay-secondary);
+        padding: 1.75rem;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
+        background: linear-gradient(
+            to bottom,
+            var(--bg-secondary),
+            rgba(30, 30, 30, 0.5)
+        );
     }
 
     .project-content h2 {
-        color: var(--accent-quaternary);
-        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+        margin: 0 0 0.75rem 0;
         font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.3;
     }
 
     .project-content p {
         color: var(--text-secondary);
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         line-height: 1.6;
-        min-height: 6rem;
+        font-size: 0.95rem;
+        flex-grow: 1;
         display: -webkit-box;
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        text-overflow: ellipsis;
+        opacity: 0.9;
     }
 
     .project-links {
-        margin-top: auto;
         display: flex;
         gap: 1rem;
-        flex-wrap: wrap;
-        padding: 0.5rem 0;
+        margin-top: auto;
     }
 
-    .btn {
-        flex: 1;
-        min-width: 140px;
+    /* Small overrides for buttons inside cards to match new rounded look */
+    .project-links .btn {
+        border-radius: 10px;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
     }
 
     @media (max-width: 768px) {
         h1 {
-            font-size: 2rem;
-            padding: 0 1rem;
+            font-size: 2.5rem;
+            margin: 2rem auto 1.5rem;
+            padding: 0 1.5rem;
+        }
+
+        .controls {
+            padding: 0 1.5rem;
+            gap: 1.5rem;
+        }
+
+        .top-bar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .search-wrapper,
+        .select-wrapper {
+            width: 100%;
+        }
+
+        .select-wrapper select {
+            width: 100%;
         }
 
         .projects {
             grid-template-columns: 1fr;
-            padding: 0 1rem;
-            gap: 1.5rem;
+            padding: 0 1.5rem;
+            gap: 2rem;
         }
 
-        .project-content {
-            padding: 1rem;
-        }
-
-        .project-content h2 {
-            font-size: 1.3rem;
-        }
-
-        .project-links {
-            padding: 0.25rem 0;
-        }
-
-        .view-project,
-        .github-link {
-            padding: 0.625rem 1rem;
-            min-width: 120px;
-            font-size: 0.9rem;
+        .filter-tags-mask::after {
+            display: none; /* Don't hide edge on mobile */
         }
     }
 </style>

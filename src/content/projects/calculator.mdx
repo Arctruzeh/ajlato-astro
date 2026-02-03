@@ -1,23 +1,19 @@
 ---
 name: "Calculator"
-description: "PHP calculator using OOP. For demonstration purposes only."
-detailedDescription: "This calculator application demonstrates object-oriented programming principles in PHP. Unlike typical calculator implementations, this project focuses on clean architecture, with separate classes handling different calculation operations, input validation, and output formatting."
+description: "A simple PHP calculator demonstrating basic Object-Oriented Programming concepts."
+detailedDescription: "This calculator application serves as an introduction to Object-Oriented Programming in PHP. Instead of using a single procedural script, the logic is encapsulated within a `Calc` class, separating the calculation logic from the HTML frontend."
 image: "../../assets/images/pic01.jpg"
 github: "https://github.com/arctruzeh/calculator"
 technologies: 
   - "PHP"
-  - "Object-Oriented Programming"
-  - "HTML5"
-  - "CSS3"
-  - "MVC Pattern"
+  - "HTML"
+  - "CSS"
 features: 
-  - "Support for basic arithmetic operations"
-  - "Memory functions for storing and recalling values"
-  - "Comprehensive error handling for invalid inputs"
-  - "Clean separation of concerns with MVC architecture"
-  - "Unit tests demonstrating code reliability"
-dateCreated: "November 2023"
-challenges: "Designing a truly object-oriented calculator required careful consideration of class responsibilities and interactions. Ensuring mathematical operations handled edge cases correctly (division by zero, floating-point precision issues) while maintaining clean code organization was particularly challenging."
-solutions: "I implemented a Strategy pattern for different operations, allowing for easy extension with new mathematical functions. A dedicated validation layer prevents invalid calculations, and custom exception classes provide meaningful error messages. The project uses dependency injection to improve testability."
+  - "Class-based calculation logic"
+  - "Basic arithmetic operations (Add, Subtract, Multiply, Divide)"
+  - "Simple form handling with POST requests"
+dateCreated: "July 2019"
+challenges: "The main goal was to transition from writing procedural PHP scripts to thinking in terms of objects and classes. Understanding how to instantiate a class and methods from a separate file was the primary learning objective."
+solutions: "I created a dedicated `Calc` class in a separate file and used PHP's `include` statement to bring it into the main script. The class acts as a blueprint for the calculator, with a method that switches between different operations based on user input."
 order: 4
 ---
