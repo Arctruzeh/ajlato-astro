@@ -1,0 +1,25 @@
+---
+name: "Login"
+description: "PHP login system using OOP. For demonstration purposes only."
+detailedDescription: "This project showcases a secure, object-oriented login system implemented in PHP. It demonstrates best practices for user authentication, password hashing, session management, and protection against common security vulnerabilities such as SQL injection and cross-site scripting (XSS)."
+image: "../../assets/images/pic02.jpg"
+github: "https://github.com/arctruzeh/login"
+technologies: 
+  - "PHP"
+  - "Object-Oriented Programming"
+  - "MySQL"
+  - "Password Hashing"
+  - "Session Management"
+  - "Security Best Practices"
+features: 
+  - "Secure password storage using modern hashing algorithms"
+  - "Protection against brute force attacks with login throttling"
+  - "CSRF token implementation for form submissions"
+  - "Secure session management with proper timeout handling"
+  - "Comprehensive input validation and sanitization"
+  - "User-friendly error messages with appropriate information disclosure"
+dateCreated: "December 2023"
+challenges: "Building a secure login system requires addressing numerous security considerations simultaneously. Balancing security with usability, handling session management correctly, and implementing proper password policies all presented significant challenges."
+solutions: "I implemented the system using PHP's password_hash and password_verify functions with appropriate cost factors. A dedicated SecurityService class handles CSRF protection, input sanitization, and other security concerns. The database interactions use prepared statements exclusively to prevent SQL injection, and all user-facing output is properly escaped."
+order: 5
+---

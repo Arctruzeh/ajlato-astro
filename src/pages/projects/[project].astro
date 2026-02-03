@@ -1,19 +1,18 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { Image } from "astro:assets";
-import { projects } from "../../data/projects";
+import { getCollection } from "astro:content";
 
-export function getStaticPaths() {
-    return Object.keys(projects).map((slug) => ({
-        params: { project: slug },
+export async function getStaticPaths() {
+    const projects = await getCollection("projects");
+    return projects.map((entry) => ({
+        params: { project: entry.id.replace(/\.mdx$/, "") },
+        props: { entry },
     }));
 }
 
-const { project } = Astro.params;
-if (!(project in projects)) {
-    throw new Error(`Project ${project} not found`);
-}
-const projectData = projects[project as keyof typeof projects];
+const { entry } = Astro.props;
+const projectData = entry.data;
 ---
 
 <Layout>
@@ -209,7 +208,6 @@ const projectData = projects[project as keyof typeof projects];
         position: relative;
         z-index: 1;
     }
-
 
     .back-button {
         display: inline-flex;
