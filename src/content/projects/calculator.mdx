@@ -1,7 +1,7 @@
 ---
-name: "Calculator"
-description: "A simple PHP calculator demonstrating basic Object-Oriented Programming concepts."
-detailedDescription: "This calculator application serves as an introduction to Object-Oriented Programming in PHP. Instead of using a single procedural script, the logic is encapsulated within a `Calc` class, separating the calculation logic from the HTML frontend."
+name: "Modern PHP Calculator"
+description: "A strictly typed, object-oriented calculator showcasing modern PHP 8.1+ features and a custom UI."
+detailedDescription: "This project reinvents the classic calculator exercise by leveraging cutting-edge PHP 8 features like Enums, Readonly Properties, and Match expressions. It moves beyond simple procedural logic to a fully strict-typed, object-oriented architecture. On the frontend, it features a bespoke, accessible UI with custom spinners and select menus, ensuring a premium experience across all devices."
 image: "../../assets/images/pic01.jpg"
 github: "https://github.com/arctruzeh/calculator"
 liveDemo: "https://ajlato-calculator.up.railway.app"
@@ -9,12 +9,15 @@ technologies:
   - "PHP"
   - "HTML"
   - "CSS"
+  - "JavaScript"
 features: 
-  - "Class-based calculation logic"
-  - "Basic arithmetic operations (Add, Subtract, Multiply, Divide)"
-  - "Simple form handling with POST requests"
-dateCreated: "July 2019"
-challenges: "The main goal was to transition from writing procedural PHP scripts to thinking in terms of objects and classes. Understanding how to instantiate a class and methods from a separate file was the primary learning objective."
-solutions: "I created a dedicated `Calc` class in a separate file and used PHP's `include` statement to bring it into the main script. The class acts as a blueprint for the calculator, with a method that switches between different operations based on user input."
+  - "Modern PHP 8 Syntax (Enums, Match, Readonly Properties)"
+  - "Strict Typing (declare(strict_types=1))"
+  - "Custom Accessible UI Components (Spinners, Select)"
+  - "Responsive Mobile-First Design"
+  - "Secure Input Sanitization"
+dateCreated: "July 2019 (Refactored 2026)"
+challenges: "The primary challenge was modernizing a legacy concept to meet contemporary standards. Implementing strict typing and Enums required a rigorous approach to data validation. Additionally, creating custom, accessible form controls (like the select dropdown and number spinners) without relying on third-party libraries presented significant UX complexities."
+solutions: "I engineered a `Calc` class using PHP 8's constructor property promotion and union types for concise, robust logic. The `match` expression replaced verbose switch statements. For the frontend, I built custom JavaScript components that maintain accessibility (ARIA) while delivering a polished visual aesthetic, ensuring form inputs behave intuitively on both desktop and mobile."
 order: 4
 ---
