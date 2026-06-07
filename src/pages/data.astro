@@ -1,0 +1,329 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+    <div class="protected-content">
+        <div id="password-form" class="password-form">
+            <h1>Protected Data</h1>
+            <p class="hint">Enter the password to view this data.</p>
+            <div id="error-message" class="error-message" style="display: none;">
+                <span>❌ Incorrect password</span>
+            </div>
+            <div class="password-input-container">
+                <input type="password" id="password-input" placeholder="Enter password" />
+                <button type="button" class="toggle-password" id="toggle-password">
+                    <span class="show">👁️</span>
+                    <span class="hide" style="display: none;">🚫</span>
+                </button>
+            </div>
+            <button id="submit-button">Unlock</button>
+        </div>
+
+        <div id="data-view" class="data-view" style="display: none;">
+            <div class="data-header">
+                <h1>Protected Data</h1>
+                <button type="button" id="lock-button" class="lock-button">🔒 Lock</button>
+            </div>
+            <pre id="data-output"></pre>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    // Path to the encrypted blob produced by scripts/encrypt-json.mjs
+    const ENCRYPTED_URL = '/data.enc.json';
+
+    function base64ToBytes(b64) {
+        const bin = atob(b64);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return bytes;
+    }
+
+    async function decryptData(password) {
+        const res = await fetch(ENCRYPTED_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Could not load encrypted data.');
+        const blob = await res.json();
+
+        const enc = new TextEncoder();
+        const salt = base64ToBytes(blob.salt);
+        const iv = base64ToBytes(blob.iv);
+        const ciphertext = base64ToBytes(blob.ciphertext);
+
+        const baseKey = await crypto.subtle.importKey(
+            'raw',
+            enc.encode(password),
+            'PBKDF2',
+            false,
+            ['deriveKey'],
+        );
+        const key = await crypto.subtle.deriveKey(
+            { name: 'PBKDF2', salt, iterations: blob.iterations, hash: blob.hash },
+            baseKey,
+            { name: 'AES-GCM', length: 256 },
+            false,
+            ['decrypt'],
+        );
+
+        // AES-GCM throws on a wrong password (auth tag mismatch).
+        const plaintextBuf = await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv },
+            key,
+            ciphertext,
+        );
+        const text = new TextDecoder().decode(plaintextBuf);
+        return JSON.parse(text);
+    }
+
+    function showError() {
+        const el = document.getElementById('error-message');
+        if (!el) return;
+        el.style.display = 'block';
+        el.style.opacity = '1';
+        setTimeout(() => {
+            el.style.opacity = '0';
+            setTimeout(() => { el.style.display = 'none'; }, 300);
+        }, 3000);
+    }
+
+    function showData(data) {
+        const form = document.getElementById('password-form');
+        const view = document.getElementById('data-view');
+        const output = document.getElementById('data-output');
+        if (!form || !view || !output) return;
+        output.textContent = JSON.stringify(data, null, 2);
+        form.style.display = 'none';
+        view.style.display = 'block';
+    }
+
+    function lock() {
+        const form = document.getElementById('password-form');
+        const view = document.getElementById('data-view');
+        const output = document.getElementById('data-output');
+        const input = document.getElementById('password-input');
+        if (!form || !view) return;
+        if (output) output.textContent = '';
+        if (input) input.value = '';
+        view.style.display = 'none';
+        form.style.display = 'block';
+    }
+
+    function togglePassword() {
+        const input = document.getElementById('password-input');
+        const showIcon = document.querySelector('.toggle-password .show');
+        const hideIcon = document.querySelector('.toggle-password .hide');
+        if (!input || !showIcon || !hideIcon) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            showIcon.style.display = 'none';
+            hideIcon.style.display = 'inline';
+        } else {
+            input.type = 'password';
+            showIcon.style.display = 'inline';
+            hideIcon.style.display = 'none';
+        }
+    }
+
+    async function handleSubmit() {
+        const input = document.getElementById('password-input');
+        const button = document.getElementById('submit-button');
+        if (!input) return;
+        const password = input.value;
+        if (!password) return;
+
+        if (button) { button.disabled = true; button.textContent = 'Unlocking…'; }
+        try {
+            const data = await decryptData(password);
+            showData(data);
+        } catch (err) {
+            showError();
+            input.value = '';
+            input.focus();
+        } finally {
+            if (button) { button.disabled = false; button.textContent = 'Unlock'; }
+        }
+    }
+
+    function init() {
+        const toggleBtn = document.getElementById('toggle-password');
+        if (toggleBtn) toggleBtn.addEventListener('click', togglePassword);
+
+        const submitBtn = document.getElementById('submit-button');
+        if (submitBtn) submitBtn.addEventListener('click', handleSubmit);
+
+        const lockBtn = document.getElementById('lock-button');
+        if (lockBtn) lockBtn.addEventListener('click', lock);
+
+        const input = document.getElementById('password-input');
+        if (input) {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSubmit();
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('astro:page-load', init);
+</script>
+
+<style>
+    .protected-content {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: calc(100vh - 8rem);
+        padding: 2rem;
+    }
+
+    .password-form {
+        background: rgba(144, 144, 144, 0.075);
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        border: 1px solid rgba(144, 144, 144, 0.25);
+        max-width: 400px;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 3rem;
+    }
+
+    .data-view {
+        background: rgba(144, 144, 144, 0.075);
+        padding: 2rem;
+        border-radius: 8px;
+        border: 1px solid rgba(144, 144, 144, 0.25);
+        max-width: 800px;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 3rem;
+    }
+
+    .data-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    .data-header h1 {
+        margin: 0;
+    }
+
+    pre {
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(144, 144, 144, 0.25);
+        border-radius: 4px;
+        padding: 1rem;
+        overflow-x: auto;
+        color: #e6e6e6;
+        font-size: 0.9rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .hint {
+        color: rgba(255, 255, 255, 0.6);
+        font-style: italic;
+        margin-bottom: 1.5rem;
+    }
+
+    .error-message {
+        background-color: rgba(255, 87, 87, 0.1);
+        color: #ff5757;
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(255, 87, 87, 0.2);
+        transition: opacity 0.3s ease;
+    }
+
+    .password-input-container {
+        position: relative;
+        width: 100%;
+        margin-bottom: 1rem;
+        box-sizing: border-box;
+    }
+
+    input {
+        width: 100%;
+        padding: 0.75rem;
+        padding-right: 3rem;
+        border: 1px solid rgba(144, 144, 144, 0.25);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        font-size: 1rem;
+        box-sizing: border-box;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: #70c7be;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        padding: 0.25rem;
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .toggle-password:hover {
+        opacity: 0.8;
+    }
+
+    button:not(.toggle-password):not(.lock-button) {
+        background-color: #70c7be;
+        color: #fff;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.2s ease;
+    }
+
+    button:not(.toggle-password):not(.lock-button):hover {
+        background-color: #8cd1ca;
+    }
+
+    button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .lock-button {
+        background: none;
+        border: 1px solid rgba(144, 144, 144, 0.25);
+        color: rgba(255, 255, 255, 0.8);
+        padding: 0.4rem 0.9rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+
+    .lock-button:hover {
+        border-color: #70c7be;
+    }
+
+    h1 {
+        color: #fff;
+    }
+
+    .password-form h1 {
+        margin-bottom: 1rem;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+</style>

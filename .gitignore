@@ -17,6 +17,10 @@ pnpm-debug.log*
 .env
 .env.production
 
+# plaintext source for the encrypted /data page — only the encrypted blob
+# (public/data.enc.json) should ever be committed
+src/data/data.json
+
 # macOS-specific files
 .DS_Store
 
