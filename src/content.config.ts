@@ -1,11 +1,9 @@
-
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
-
-console.log("Current dir:", import.meta.url);
+import { z } from 'astro/zod';
 
 const projects = defineCollection({
-    type: 'content',
+    loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
     schema: ({ image }) => z.object({
         name: z.string(),
         description: z.string(),

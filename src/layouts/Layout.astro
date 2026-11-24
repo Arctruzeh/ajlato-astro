@@ -4,7 +4,7 @@ import Footer from "../components/Footer.astro";
 import GtmHead from "../components/gtm-head.astro";
 import GtmBody from "../components/gtm-body.astro";
 import "../styles/global.css";
-import { Image } from "astro:assets";
+import { Image, Font } from "astro:assets";
 import icon from "../assets/images/code.png";
 import { ClientRouter } from "astro:transitions";
 
@@ -18,12 +18,8 @@ const isHomePage = Astro.url.pathname === "/";
         <meta name="viewport" content="width=device-width" />
         <meta name="generator" content={Astro.generator} />
         <title>A.J. Latocha</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400|Permanent+Marker"
-            rel="stylesheet"
-        />
+        <Font cssVariable="--font-source-sans" preload={[{ style: "normal" }]} />
+        <Font cssVariable="--font-permanent-marker" preload />
         <ClientRouter />
         <GtmHead />
     </head>

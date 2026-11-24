@@ -1,7 +1,7 @@
 ---
 // import "../styles/global.css";
 import { ClientRouter, fade, slide } from "astro:transitions";
-import { Image } from 'astro:assets'
+import { Image, Font } from 'astro:assets'
 import icon from '../assets/images/code.png' // Add your icon path here
 ---
 
@@ -14,9 +14,7 @@ import icon from '../assets/images/code.png' // Add your icon path here
         <meta name="generator" content={Astro.generator} />
         <title>A.J. Latocha | Kayce</title>
         <ClientRouter />
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Crafty+Girls&display=swap" rel="stylesheet">
+        <Font cssVariable="--font-crafty-girls" preload />
     </head>
     <body>
 

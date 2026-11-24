@@ -9,11 +9,11 @@ import Layout from "../layouts/Layout.astro";
                 <h1>A.J. Latocha</h1>
                 <p class="tagline">Software Engineer & Digital Specialist</p>
                 <div class="contact-info">
-                    <span>Tampa, FL</span> •
-                    <a href="mailto:ajlato01@gmail.com">ajlato01@gmail.com</a> •
+                    <span>Tampa, FL</span>{" • "}
+                    <a href="mailto:ajlato01@gmail.com">ajlato01@gmail.com</a>{" • "}
                     <a href="https://github.com/arctruzeh" target="_blank"
                         >GitHub</a
-                    > •
+                    >{" • "}
                     <a href="/" target="_blank">ajlato.com</a>
                 </div>
             </div>
@@ -37,7 +37,7 @@ import Layout from "../layouts/Layout.astro";
             </button>
         </header>
 
-        <main class="resume-main">
+        <div class="resume-main">
             <section class="resume-section">
                 <h2>Professional Summary</h2>
                 <p>
@@ -202,7 +202,7 @@ import Layout from "../layouts/Layout.astro";
                     </ul>
                 </div>
             </section>
-        </main>
+        </div>
 
         <section class="resume-section grid-2">
             <div>
@@ -345,7 +345,7 @@ import Layout from "../layouts/Layout.astro";
 
     .resume-header h1 {
         font-size: 3rem;
-        font-family: "Permanent Marker", cursive;
+        font-family: var(--font-permanent-marker);
         color: var(--accent-primary);
         margin: 0;
         line-height: 1;

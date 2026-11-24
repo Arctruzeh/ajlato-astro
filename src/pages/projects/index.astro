@@ -430,7 +430,10 @@ const allTechnologies = [
     }
 
     .select-wrapper select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
         appearance: none;
+        background-image: none;
         padding: 0.8rem 2.5rem 0.8rem 1.2rem;
         border-radius: 12px;
         background-color: var(--bg-secondary);
@@ -440,6 +443,10 @@ const allTechnologies = [
         cursor: pointer;
         transition: all 0.2s ease;
         min-width: 160px;
+    }
+
+    .select-wrapper select::picker-icon {
+        display: none;
     }
 
     .select-wrapper::after {
