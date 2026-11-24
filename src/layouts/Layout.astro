@@ -16,6 +16,8 @@ const isHomePage = Astro.url.pathname === "/";
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/png" href={icon.src} />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
         <title>A.J. Latocha</title>
         <Font cssVariable="--font-source-sans" preload={[{ style: "normal" }]} />
